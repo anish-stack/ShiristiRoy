@@ -244,6 +244,7 @@ export const api = {
       register: (d: unknown) => api.post('/auth/register', d),
       login: (d: unknown) => api.post<{ user: User; accessToken: string; refreshToken: string }>('/auth/login', d),
       logout: (refreshToken: string) => api.post('/auth/logout', { refreshToken }),
+      
       forgotPassword: (email: string) => api.post('/auth/forgot', { email }),
       resetPassword: (d: unknown) => api.post('/auth/reset', d),
       me: () => api.get<User>('/auth/me'),
