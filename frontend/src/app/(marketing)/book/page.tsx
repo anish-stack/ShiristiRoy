@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import {
   Loader2, ChevronLeft, ChevronRight, Check,
@@ -174,9 +174,8 @@ const fieldStyle: React.CSSProperties = {
   outline: 'none', resize: 'none', transition: 'border-color 0.2s',
 };
 
-/* ─── main component ──────────────────────────────────────────────── */
-export default function BookPage() {
-  const { user, hydrated } = useAuthStore();
+function BookingContent() {
+const { user, hydrated } = useAuthStore();
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -607,4 +606,13 @@ export default function BookPage() {
       </div>
     </div>
   );
+}
+
+/* ─── main component ──────────────────────────────────────────────── */
+export default function BookPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <BookingContent />
+    </Suspense>
+  )
 }

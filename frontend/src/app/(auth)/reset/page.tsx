@@ -1,13 +1,13 @@
 'use client';
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Loader2, Eye, EyeOff, ArrowRight, ArrowLeft, Sparkles, ShieldCheck } from 'lucide-react';
 import { authApi } from '@/lib/api';
 import { toast } from '@/components/ui/Toaster';
 
-export default function ResetPage() {
-    const router = useRouter();
+function ResetContent() {
+const router = useRouter();
     const searchParams = useSearchParams();
     const tokenFromUrl = searchParams.get('token') ?? '';
     const emailFromUrl = searchParams.get('email') ?? '';
@@ -319,5 +319,13 @@ export default function ResetPage() {
                 </div>
             </div>
         </>
+    );
+}
+
+export default function ResetPage() {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <ResetContent />
+        </Suspense>
     );
 }

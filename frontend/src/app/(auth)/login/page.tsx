@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Loader2, Eye, EyeOff, ArrowRight, Sparkles } from 'lucide-react';
@@ -7,8 +7,8 @@ import { authApi } from '@/lib/api';
 import { useAuthStore } from '@/store/auth.store';
 import { toast } from '@/components/ui/Toaster';
 
-export default function LoginPage() {
-  const { setAuth } = useAuthStore();
+function LoginContent() {
+const { setAuth } = useAuthStore();
   const router = useRouter();
   const searchParams = useSearchParams();
   const next = searchParams.get('next') || '/dashboard';
@@ -192,5 +192,13 @@ export default function LoginPage() {
         </div>
       </div>
     </>
+  );
+}
+
+export default function LoginPage() {
+   return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <LoginContent />
+    </Suspense>
   );
 }
