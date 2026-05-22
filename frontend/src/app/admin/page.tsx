@@ -72,10 +72,10 @@ export default function AdminDashboard() {
 
         // fetch dashboard stats
         try {
-          const response = await api.get('/admin/dashboard');
+          const response = await api.get<typeof stats>('/admin/dashboard');
           console.log("response", response)
           // depending on your api structure
-          setStats(response?.data || response);
+setStats(response);
         } catch (error) {
           console.log('Dashboard stats error:', error);
         }

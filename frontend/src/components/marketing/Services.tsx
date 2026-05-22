@@ -1,9 +1,9 @@
-"use client"
+"use client";
 
-import React, { useEffect, useState } from "react"
-import Image from "next/image"
-import Link from "next/link"
-import { motion } from "framer-motion"
+import React, { useEffect, useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { motion } from "framer-motion";
 import {
   ArrowRight,
   Heart,
@@ -15,9 +15,9 @@ import {
   Flower2,
   Brain,
   RefreshCw,
-} from "lucide-react"
+} from "lucide-react";
 
-import { serviceApi } from "@/lib/api"
+import { serviceApi } from "@/lib/api";
 
 // ─── Static fallback data (mirrors the screenshot) ───────────────────────────
 const FALLBACK_SERVICES = [
@@ -82,8 +82,7 @@ const FALLBACK_SERVICES = [
     slug: "emotional-regulation",
     category: "emotional",
     name: "Emotional Regulation & Self-Understanding",
-    shortDesc:
-      "Build resilience, self-compassion, and healthier coping.",
+    shortDesc: "Build resilience, self-compassion, and healthier coping.",
     modes: ["in_person", "online"],
     price: { amount: 2500 },
     durationMin: 50,
@@ -105,7 +104,7 @@ const FALLBACK_SERVICES = [
       url: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600&q=80",
     },
   },
-]
+];
 
 // ─── Icon map ─────────────────────────────────────────────────────────────────
 const iconMap: Record<string, React.ElementType> = {
@@ -115,7 +114,7 @@ const iconMap: Record<string, React.ElementType> = {
   integrative: RefreshCw,
   emotional: Brain,
   youth: Heart,
-}
+};
 
 // ─── Animation variants ───────────────────────────────────────────────────────
 const cardVariants = {
@@ -125,29 +124,32 @@ const cardVariants = {
     y: 0,
     transition: { duration: 0.6, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] },
   }),
-}
+};
 
 const headerVariants = {
   hidden: { opacity: 0, y: 32 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] } },
-}
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] },
+  },
+};
 
 // ─── Component ────────────────────────────────────────────────────────────────
 const Services = () => {
-  const [services, setServices] = useState<any[]>(FALLBACK_SERVICES)
+  const [services, setServices] = useState<any[]>(FALLBACK_SERVICES);
 
   useEffect(() => {
     const fetchServices = async () => {
       try {
-        const res = await serviceApi.list()
-        const data = res?.data || res || []
-        if (data.length) setServices(data)
+        const res = await serviceApi.list();
+        if (res?.length) setServices(res);
       } catch (err) {
         // keep fallback
       }
-    }
-    fetchServices()
-  }, [])
+    };
+    fetchServices();
+  }, []);
 
   return (
     <section
@@ -189,10 +191,22 @@ const Services = () => {
         transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
       >
         {/* SVG leaf cluster – bottom-left */}
-        <svg width="320" height="320" viewBox="0 0 320 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg
+          width="320"
+          height="320"
+          viewBox="0 0 320 320"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
           <g opacity="0.85">
             {/* stem */}
-            <path d="M60 280 Q100 220 160 140 Q200 80 230 40" stroke="#7A9A60" strokeWidth="2.5" fill="none" strokeLinecap="round"/>
+            <path
+              d="M60 280 Q100 220 160 140 Q200 80 230 40"
+              stroke="#7A9A60"
+              strokeWidth="2.5"
+              fill="none"
+              strokeLinecap="round"
+            />
             {/* leaves */}
             {[
               "M160 140 Q120 100 80 120 Q110 160 160 140Z",
@@ -220,11 +234,28 @@ const Services = () => {
         className="absolute -top-8 -right-8 pointer-events-none select-none"
         style={{ opacity: 0.55, zIndex: 0 }}
         animate={{ y: [0, -14, 0], rotate: [0, -3, 0] }}
-        transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+        transition={{
+          duration: 7,
+          repeat: Infinity,
+          ease: "easeInOut",
+          delay: 1,
+        }}
       >
-        <svg width="240" height="240" viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg
+          width="240"
+          height="240"
+          viewBox="0 0 240 240"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
           <g opacity="0.9">
-            <path d="M180 20 Q140 80 100 140 Q70 190 60 220" stroke="#7A9A60" strokeWidth="2" fill="none" strokeLinecap="round"/>
+            <path
+              d="M180 20 Q140 80 100 140 Q70 190 60 220"
+              stroke="#7A9A60"
+              strokeWidth="2"
+              fill="none"
+              strokeLinecap="round"
+            />
             {[
               "M100 140 Q130 105 155 122 Q132 155 100 140Z",
               "M100 140 Q68 108 48 128 Q68 158 100 140Z",
@@ -232,7 +263,12 @@ const Services = () => {
               "M130 100 Q104 72 90 90 Q104 114 130 100Z",
               "M155 55 Q172 30 185 45 Q172 65 155 55Z",
             ].map((d, i) => (
-              <path key={i} d={d} fill={i % 2 === 0 ? "#B8CC90" : "#A0B878"} opacity={0.88} />
+              <path
+                key={i}
+                d={d}
+                fill={i % 2 === 0 ? "#B8CC90" : "#A0B878"}
+                opacity={0.88}
+              />
             ))}
           </g>
         </svg>
@@ -240,7 +276,6 @@ const Services = () => {
 
       {/* ── Content ── */}
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
         {/* ── Header ── */}
         <motion.div
           className="text-center mb-20"
@@ -286,7 +321,12 @@ const Services = () => {
                 fill="none"
               />
               <path d="M11 2L11 20" stroke="#B89BEA" strokeWidth="1.2" />
-              <path d="M7 11 Q9 8 11 11 Q13 14 15 11" stroke="#B89BEA" strokeWidth="1.2" fill="none" />
+              <path
+                d="M7 11 Q9 8 11 11 Q13 14 15 11"
+                stroke="#B89BEA"
+                strokeWidth="1.2"
+                fill="none"
+              />
             </svg>
             <div className="w-16 h-px" style={{ background: "#DDD2CF" }} />
           </div>
@@ -301,7 +341,7 @@ const Services = () => {
         */}
         <div className="grid grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
           {services.map((service, index) => {
-            const Icon = iconMap[service?.category] || Shield
+            const Icon = iconMap[service?.category] || Shield;
 
             return (
               <motion.div
@@ -311,7 +351,10 @@ const Services = () => {
                 whileInView="visible"
                 viewport={{ once: true, margin: "-60px" }}
                 variants={cardVariants}
-                whileHover={{ y: -10, transition: { duration: 0.35, ease: "easeOut" } }}
+                whileHover={{
+                  y: -10,
+                  transition: { duration: 0.35, ease: "easeOut" },
+                }}
                 className="group relative overflow-hidden"
                 style={{
                   borderRadius: "28px",
@@ -322,30 +365,32 @@ const Services = () => {
                   boxShadow: "0 8px 40px rgba(0,0,0,0.04)",
                   transition: "box-shadow 0.4s ease",
                 }}
-                onMouseEnter={e => {
-                  ;(e.currentTarget as HTMLElement).style.boxShadow =
-                    "0 24px 60px rgba(155,122,217,0.16)"
+                onMouseEnter={(e) => {
+                  (e.currentTarget as HTMLElement).style.boxShadow =
+                    "0 24px 60px rgba(155,122,217,0.16)";
                 }}
-                onMouseLeave={e => {
-                  ;(e.currentTarget as HTMLElement).style.boxShadow =
-                    "0 8px 40px rgba(0,0,0,0.04)"
+                onMouseLeave={(e) => {
+                  (e.currentTarget as HTMLElement).style.boxShadow =
+                    "0 8px 40px rgba(0,0,0,0.04)";
                 }}
               >
                 {/* hover glow overlay */}
                 <div
                   className="absolute inset-0 opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-500"
                   style={{
-                    background: "linear-gradient(135deg, rgba(247,241,255,0.55) 0%, transparent 60%)",
+                    background:
+                      "linear-gradient(135deg, rgba(247,241,255,0.55) 0%, transparent 60%)",
                     borderRadius: "28px",
                   }}
                 />
 
                 {/* ── Split layout: LEFT text, RIGHT image ── */}
-                <div className="relative z-10 flex" style={{ minHeight: "220px" }}>
-
+                <div
+                  className="relative z-10 flex"
+                  style={{ minHeight: "220px" }}
+                >
                   {/* LEFT: all text content */}
                   <div className="flex flex-col p-5 flex-1 min-w-0">
-
                     {/* Icon circle */}
                     <div
                       className="flex items-center justify-center mb-4 self-start"
@@ -402,7 +447,9 @@ const Services = () => {
                         >
                           ₹{service?.price?.amount?.toLocaleString()}
                         </span>
-                        <span style={{ color: "#C8BED4", fontSize: "0.75rem" }}>·</span>
+                        <span style={{ color: "#C8BED4", fontSize: "0.75rem" }}>
+                          ·
+                        </span>
                         <span
                           style={{
                             fontSize: "0.72rem",
@@ -425,15 +472,15 @@ const Services = () => {
                           border: "1px solid #E7DBFA",
                           flexShrink: 0,
                         }}
-                        onMouseEnter={e => {
-                          const el = e.currentTarget as HTMLElement
-                          el.style.background = "#9B7AD9"
-                          el.style.borderColor = "#9B7AD9"
+                        onMouseEnter={(e) => {
+                          const el = e.currentTarget as HTMLElement;
+                          el.style.background = "#9B7AD9";
+                          el.style.borderColor = "#9B7AD9";
                         }}
-                        onMouseLeave={e => {
-                          const el = e.currentTarget as HTMLElement
-                          el.style.background = "#F7F1FF"
-                          el.style.borderColor = "#E7DBFA"
+                        onMouseLeave={(e) => {
+                          const el = e.currentTarget as HTMLElement;
+                          el.style.background = "#F7F1FF";
+                          el.style.borderColor = "#E7DBFA";
                         }}
                       >
                         <ArrowRight size={13} color="#9B7AD9" />
@@ -458,7 +505,13 @@ const Services = () => {
                         sizes="(max-width: 768px) 40vw, 20vw"
                       />
                     ) : (
-                      <div style={{ width: "100%", height: "100%", background: "#EDE8F5" }} />
+                      <div
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          background: "#EDE8F5",
+                        }}
+                      />
                     )}
                     {/* soft left-edge blend */}
                     <div
@@ -471,7 +524,7 @@ const Services = () => {
                   </div>
                 </div>
               </motion.div>
-            )
+            );
           })}
         </div>
 
@@ -491,12 +544,17 @@ const Services = () => {
               fill="rgba(185,155,234,0.15)"
             />
             <path d="M14 3L14 25" stroke="#B89BEA" strokeWidth="1.2" />
-            <path d="M8 14 Q11 10 14 14 Q17 18 20 14" stroke="#B89BEA" strokeWidth="1.2" fill="none"/>
+            <path
+              d="M8 14 Q11 10 14 14 Q17 18 20 14"
+              stroke="#B89BEA"
+              strokeWidth="1.2"
+              fill="none"
+            />
           </svg>
         </motion.div>
       </div>
     </section>
-  )
-}
+  );
+};
 
-export default Services
+export default Services;

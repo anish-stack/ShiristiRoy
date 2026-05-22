@@ -71,9 +71,7 @@ export function Navbar() {
         const res =
           await serviceApi.list();
 
-        setServices(
-          res?.data || res || []
-        );
+        setServices(res ?? []);
       } catch (err) {
         console.log(err);
       }

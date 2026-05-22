@@ -39,55 +39,25 @@ export default function ResetPage() {
     const strengthColor = ['', '#D9698A', '#E8A87C', '#D9C46A', '#7DA98D', '#4B7A8C'][strength];
 
     const onSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        if (form.newPassword.length < 8) return toast('Password must be at least 8 characters', 'error');
-        if (form.newPassword !== form.confirm) return toast('Passwords do not match', 'error');
-        if (!form.token) return toast('Reset token missing — use the link from your email', 'error');
-        setLoading(true);
-        try {
-            setLoading(true);
-
-            const res = await authApi.resetPassword({
-                email: form.email,
-                token: form.token,
-                newPassword: form.newPassword,
-            });
-
-
-            if (res?.success) {
-                setDone(true);
-
-                toast(
-                    res?.message ||
-                    'Password reset successfully',
-                    'success'
-                );
-
-
-            } else {
-                toast(
-                    res?.message || 'Reset failed',
-                    'error'
-                );
-            }
-        } catch (err: any) {
-            console.error(
-                '❌ Reset password error:',
-                err
-            );
-
-            const message =
-                err?.response?.data?.message ||
-                err?.data?.message ||
-                err?.message ||
-                'Reset failed. Please try again.';
-
-            toast(message, 'error');
-        } finally {
-            setLoading(false);
-        }
-    };
-
+    e.preventDefault();
+    if (form.newPassword.length < 8) return toast('Password must be at least 8 characters', 'error');
+    if (form.newPassword !== form.confirm) return toast('Passwords do not match', 'error');
+    if (!form.token) return toast('Reset token missing — use the link from your email', 'error');
+    setLoading(true);
+    try {
+        await authApi.resetPassword({
+            email: form.email,
+            token: form.token,
+            newPassword: form.newPassword,
+        });
+        setDone(true);
+        toast('Password reset successfully', 'success');
+    } catch (err: any) {
+        toast(err?.message || 'Reset failed. Please try again.', 'error');
+    } finally {
+        setLoading(false);
+    }
+};
     return (
         <>
             <style>{`

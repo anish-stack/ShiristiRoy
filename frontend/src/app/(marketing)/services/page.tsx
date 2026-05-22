@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
-import { serviceApi } from '@/lib/api';
+import { serviceApi, type Service } from '@/lib/api';
 import { buildMetadata } from '@/lib/seo';
 
 export const metadata: Metadata = buildMetadata({
@@ -43,7 +43,7 @@ export default async function ServicesPage() {
               { _id: '1', slug: 'individual-counselling', name: 'Individual Counselling', shortDesc: 'One-on-one sessions for emotional well-being and personal growth.', description: '', durationMin: 50, price: { amount: 2500, currency: 'INR' }, modes: ['online', 'in_person'], category: 'individual' },
               { _id: '2', slug: 'family-therapy', name: 'Family Therapy', shortDesc: 'Improve communication and strengthen family dynamics.', description: '', durationMin: 75, price: { amount: 3500, currency: 'INR' }, modes: ['online', 'in_person'], category: 'family' },
               { _id: '3', slug: 'online-therapy', name: 'Online Therapy', shortDesc: 'Secure video counselling from anywhere in the world.', description: '', durationMin: 50, price: { amount: 2500, currency: 'INR' }, modes: ['online'], category: 'individual' },
-            ]).map((s) => (
+            ]).map((s: Service) => (
               <div key={s._id} className="card-soft group hover:shadow-md hover:border-brand-lavender/25 transition-all duration-300 flex flex-col">
                 <div className="text-4xl mb-5">{icons[s.slug] ?? '🌸'}</div>
                 <h2 className="font-serif text-2xl text-brand-ink mb-3 group-hover:text-brand-lavender transition-colors">{s.name}</h2>

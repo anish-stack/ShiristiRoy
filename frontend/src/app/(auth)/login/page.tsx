@@ -67,15 +67,11 @@ export default function LoginPage() {
 
         {/* ── Left panel: decorative ── */}
         <div className="hidden lg:flex lg:w-[48%] relative overflow-hidden bg-[#1C1629] flex-col justify-between p-12">
-          {/* Grain overlay */}
           <div className="grain absolute inset-0 pointer-events-none" />
-
-          {/* Soft blobs */}
           <div className="absolute top-[-80px] left-[-80px] w-[400px] h-[400px] rounded-full bg-[#7B5EA7]/20 blur-[100px]" />
           <div className="absolute bottom-[-60px] right-[-60px] w-[350px] h-[350px] rounded-full bg-[#D9698A]/15 blur-[80px]" />
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] rounded-full bg-[#9B7AD9]/10 blur-[120px]" />
 
-          {/* Top logo */}
           <div className="relative z-10 anim-fade">
             <div className="flex items-center gap-2">
               <Sparkles size={14} className="text-[#C9B8E8]" />
@@ -83,7 +79,6 @@ export default function LoginPage() {
             </div>
           </div>
 
-          {/* Center quote */}
           <div className="relative z-10 flex flex-col gap-6">
             <div className="w-8 h-[2px] bg-gradient-to-r from-[#9B7AD9] to-[#D9698A]" />
             <blockquote className="font-cormorant text-4xl text-white/90 leading-[1.35] font-light italic">
@@ -92,7 +87,6 @@ export default function LoginPage() {
             <p className="text-xs text-white/30 uppercase tracking-[0.2em]">Your journey, your pace</p>
           </div>
 
-          {/* Bottom stats */}
           <div className="relative z-10 grid grid-cols-3 gap-6 border-t border-white/10 pt-8">
             {[['200+', 'Sessions'], ['98%', 'Satisfaction'], ['12+', 'Nationalities']].map(([val, label]) => (
               <div key={label}>
@@ -105,14 +99,12 @@ export default function LoginPage() {
 
         {/* ── Right panel: form ── */}
         <div className="flex-1 flex flex-col justify-center px-6 py-16 sm:px-10 lg:px-16 xl:px-24">
-          {/* Mobile logo */}
           <div className="lg:hidden text-center mb-10 anim-up">
             <Link href="/" className="font-cormorant text-2xl text-[#1C1629]">Srishti Roy</Link>
             <p className="text-[10px] text-[#8B7FA8] uppercase tracking-[0.22em] mt-1">Counselling Psychologist</p>
           </div>
 
           <div className="w-full max-w-sm mx-auto">
-            {/* Heading */}
             <div className="mb-10 anim-up anim-d1">
               <p className="text-[10px] text-[#9B7AD9] uppercase tracking-[0.25em] mb-3 font-medium">Welcome back</p>
               <h1 className="font-cormorant text-5xl text-[#1C1629] leading-tight font-light">
@@ -124,7 +116,6 @@ export default function LoginPage() {
             </div>
 
             <form onSubmit={onSubmit} className="space-y-4">
-              {/* Email */}
               <div className="anim-up anim-d2">
                 <div className="float-label">
                   <input
@@ -140,7 +131,6 @@ export default function LoginPage() {
                 </div>
               </div>
 
-              {/* Password */}
               <div className="anim-up anim-d3">
                 <div className="float-label relative">
                   <input
@@ -168,7 +158,6 @@ export default function LoginPage() {
                 </div>
               </div>
 
-              {/* Submit */}
               <div className="anim-up anim-d4 pt-2">
                 <button
                   type="submit"
@@ -187,14 +176,12 @@ export default function LoginPage() {
               </div>
             </form>
 
-            {/* Divider */}
             <div className="anim-up anim-d5 flex items-center gap-4 my-8">
               <div className="h-px flex-1 bg-[#E2D9F3]" />
               <span className="text-[11px] text-[#B0A4CC] uppercase tracking-wider">or</span>
               <div className="h-px flex-1 bg-[#E2D9F3]" />
             </div>
 
-            {/* Register link */}
             <p className="anim-up anim-d5 text-center text-sm text-[#8B7FA8]">
               New here?{' '}
               <Link href="/register" className="text-[#1C1629] font-medium hover:text-[#9B7AD9] transition-colors underline underline-offset-4">

@@ -9,75 +9,26 @@ export default function ForgotPage() {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
-const onSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
 
-  if (loading) return;
-
-  if (!email?.trim()) {
-    toast(
-      'Please enter your email address',
-      'error'
-    );
-
-    return;
-  }
-
-  try {
-    setLoading(true);
-
-    const res = await authApi.forgotPassword(
-      email
-    );
-
-    console.log(
-      'Forgot password response:',
-      res
-    );
-
-    /**
-     * Expected response:
-     * {
-     *   success: true,
-     *   message: "...",
-     *   data: {
-     *     emailSent: true
-     *   }
-     * }
-     */
-
-    if (res?.success) {
-      setSent(true);
-
-      toast(
-        res?.message ||
-          'Password reset email sent',
-        'success'
-      );
-    } else {
-      toast(
-        res?.message ||
-          'Failed to send reset email',
-        'error'
-      );
+  const onSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (loading) return;
+    if (!email?.trim()) {
+      toast('Please enter your email address', 'error');
+      return;
     }
-  } catch (err: any) {
-    console.error(
-      '❌ Forgot password error:',
-      err
-    );
+    try {
+      setLoading(true);
+      await authApi.forgotPassword(email);
+      setSent(true);
+      toast('Password reset email sent', 'success');
+    } catch (err: any) {
+      toast(err?.message || 'Something went wrong. Please try again.', 'error');
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    const message =
-      err?.response?.data?.message ||
-      err?.data?.message ||
-      err?.message ||
-      'Something went wrong. Please try again.';
-
-    toast(message, 'error');
-  } finally {
-    setLoading(false);
-  }
-};
   return (
     <>
       <style>{`
@@ -118,13 +69,11 @@ const onSubmit = async (e: React.FormEvent) => {
           <div className="absolute top-[-80px] left-[-60px] w-[380px] h-[380px] rounded-full bg-[#7B5EA7]/20 blur-[100px]" />
           <div className="absolute bottom-[-60px] right-[-60px] w-[320px] h-[320px] rounded-full bg-[#D9698A]/15 blur-[80px]" />
 
-          {/* Logo */}
           <div className="relative z-10 anim-fade flex items-center gap-2">
             <Sparkles size={14} className="text-[#C9B8E8]" />
             <span className="font-cormorant text-[#C9B8E8] text-sm tracking-[0.2em] uppercase">Srishti Roy</span>
           </div>
 
-          {/* Center */}
           <div className="relative z-10 flex flex-col gap-6">
             <div className="w-8 h-[2px] bg-gradient-to-r from-[#9B7AD9] to-[#D9698A]" />
             <blockquote className="font-cormorant text-4xl text-white/90 leading-[1.35] font-light italic">
@@ -133,7 +82,6 @@ const onSubmit = async (e: React.FormEvent) => {
             <p className="text-xs text-white/30 uppercase tracking-[0.2em]">Reset & start fresh</p>
           </div>
 
-          {/* Bottom note */}
           <div className="relative z-10 border-t border-white/10 pt-8">
             <p className="text-xs text-white/20 leading-relaxed">
               Reset links expire in 30 minutes for your security. Check your spam folder if you don't see the email.
@@ -144,7 +92,6 @@ const onSubmit = async (e: React.FormEvent) => {
         {/* ── Right: form ── */}
         <div className="flex-1 flex flex-col justify-center px-6 py-16 sm:px-10 lg:px-16 xl:px-24">
 
-          {/* Mobile logo */}
           <div className="lg:hidden text-center mb-10 anim-up">
             <Link href="/" className="font-cormorant text-2xl text-[#1C1629]">Srishti Roy</Link>
             <p className="text-[10px] text-[#8B7FA8] uppercase tracking-[0.22em] mt-1">Counselling Psychologist</p>
@@ -154,13 +101,11 @@ const onSubmit = async (e: React.FormEvent) => {
 
             {!sent ? (
               <>
-                {/* Back link */}
                 <Link href="/login" className="anim-up inline-flex items-center gap-1.5 text-xs text-[#8B7FA8] hover:text-[#9B7AD9] transition-colors mb-10">
                   <ArrowLeft size={12} />
                   Back to sign in
                 </Link>
 
-                {/* Heading */}
                 <div className="mb-10 anim-up anim-d1">
                   <p className="text-[10px] text-[#9B7AD9] uppercase tracking-[0.25em] mb-3 font-medium">Password reset</p>
                   <h1 className="font-cormorant text-5xl text-[#1C1629] leading-tight font-light">
@@ -213,7 +158,6 @@ const onSubmit = async (e: React.FormEvent) => {
                 </p>
               </>
             ) : (
-              /* ── Success state ── */
               <div className="flex flex-col items-center text-center gap-6">
                 <div className="anim-scale flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-[#F3ECFF] to-[#E8DDF9] shadow-lg shadow-[#9B7AD9]/15">
                   <MailCheck size={32} className="text-[#9B7AD9]" />

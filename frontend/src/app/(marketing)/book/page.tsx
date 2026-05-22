@@ -515,11 +515,11 @@ export default function BookPage() {
                   </div>
                 ))}
 
-                {selectedService?.price?.amount > 0 && (
+                {(selectedService?.price?.amount ?? 0) > 0 && (
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '14px 0' }}>
                     <span className="body-font" style={{ fontSize: 13, color: '#9ba0ae' }}>Fee</span>
                     <span style={{ fontFamily: "'Lora',Georgia,serif", fontSize: 20, color: '#6b5ea8', fontWeight: 500 }}>
-                      ₹{selectedService.price.amount.toLocaleString('en-IN')}
+                      ₹{selectedService?.price?.amount?.toLocaleString('en-IN')}
                     </span>
                   </div>
                 )}
