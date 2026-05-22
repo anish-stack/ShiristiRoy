@@ -54,16 +54,6 @@ const onSubmit = async (e: React.FormEvent) => {
           'Password reset email sent',
         'success'
       );
-
-      console.log(
-        '✅ Email sent:',
-        res?.emailSent
-      );
-
-      console.log(
-        '📧 Email:',
-        res?.email
-      );
     } else {
       toast(
         res?.message ||

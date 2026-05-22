@@ -195,12 +195,19 @@ export function Navbar() {
         </ul>
 
         <div className="hidden lg:flex items-center gap-3">
-          {user && (
+          {user ? (
             <Link
               href="/dashboard"
               className="text-sm font-medium text-[#5F5651] hover:text-[#A06D5F] transition-colors"
             >
               Dashboard
+            </Link>
+          ):(
+            <Link
+              href="/login"
+              className="text-sm font-medium text-[#5F5651] hover:text-[#A06D5F] transition-colors"
+            >
+              Login
             </Link>
           )}
 

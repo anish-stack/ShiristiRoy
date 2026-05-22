@@ -55,10 +55,10 @@ export function Footer() {
       label: 'About',
     },
 
-    {
-      href: '/therapists',
-      label: 'Therapists',
-    },
+    // {
+    //   href: '/therapists',
+    //   label: 'Therapists',
+    // },
 
     {
       href: '/services',
