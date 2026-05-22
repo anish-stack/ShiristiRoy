@@ -339,7 +339,7 @@ const Services = () => {
             md      → 2 columns  (grid-cols-2)
             xl      → 3 columns  (grid-cols-3)
         */}
-        <div className="grid grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
           {services.map((service, index) => {
             const Icon = iconMap[service?.category] || Shield;
 
