@@ -7,7 +7,7 @@ import Image from "next/image"
 import { motion, AnimatePresence } from "framer-motion"
 
 import indiualsCouncil from "@/assets/indiuals_counsel.png"
-import familyCouncil from "@/assets/family_counsil.jpeg"
+import familyCouncil from "@/assets/family_counsil.png"
 
 const slides = [
     {
@@ -55,7 +55,7 @@ const Hero = () => {
 
                     <h1 className="font-serif text-5xl sm:text-6xl lg:text-7xl text-brand-ink leading-[1.05] mb-6">
                         Healing through <br />
-                        <span className="text-brand-lavender italic">
+                        <span className="text-brand-lavender ">
                             awareness
                         </span>{" "}
                         & self-understanding
@@ -87,7 +87,7 @@ const Hero = () => {
                     {/* Stats */}
                     <div className="grid grid-cols-3 gap-6 max-w-md">
                         {[
-                            ["3+", "Years Experience"],
+                            ["3200", "Hours of Experience"],
                             ["12+", "Nationalities"],
                             ["4", "Languages"],
                         ].map(([value, label]) => (

@@ -30,6 +30,7 @@ const allowedMimeTypes = [
   'image/jpg',
   'image/png',
   'image/webp',
+  'application/pdf', // ✅ PDF added
 ];
 
 // File filter
@@ -41,7 +42,7 @@ const fileFilter = (req, file, cb) => {
   } else {
     cb(
       new Error(
-        'Only jpg, jpeg, png and webp images are allowed'
+        'Only jpg, jpeg, png ,pdf and webp images are allowed'
       )
     );
   }
@@ -122,6 +123,108 @@ export const singleImageUpload = (
         message:
           error.message ||
           'Failed to process image',
+      });
+    }
+  },
+];
+
+export const singleFileUpload = (fieldName = 'file') => [
+  upload.single(fieldName),
+
+  async (req, res, next) => {
+      console.log(req)
+    try {
+      if (!req.file) {
+        return res.status(400).json({
+          success: false,
+          message: 'No file uploaded',
+        });
+      }
+
+      const publicId = crypto.randomUUID();
+
+      const ext = req.file.mimetype === 'application/pdf'
+        ? 'pdf'
+        : 'webp';
+
+      const fileName = `${publicId}.${ext}`;
+      const outputPath = path.join(UPLOAD_DIR, fileName);
+
+      let publicPath = `/uploads/${fileName}`;
+
+      // 🖼️ IMAGE PROCESSING
+      if (req.file.mimetype.startsWith('image/')) {
+        await sharp(req.file.buffer)
+          .resize({ width: 1600, withoutEnlargement: true })
+          .webp({ quality: 80 })
+          .toFile(outputPath);
+
+        publicPath = `/uploads/${publicId}.webp`;
+      }
+
+      // 📄 PDF PROCESSING (NO sharp, direct write)
+      else if (req.file.mimetype === 'application/pdf') {
+        fs.writeFileSync(outputPath, req.file.buffer);
+      }
+
+      req.uploadedFile = {
+        publicId,
+        actualPath: outputPath,
+        publicPath,
+        fileName,
+        mimeType: req.file.mimetype,
+      };
+
+      next();
+    } catch (error) {
+      console.error('Upload error:', error);
+
+      return res.status(500).json({
+        success: false,
+        message: error.message || 'Failed to process file',
+      });
+    }
+  },
+];
+export const multiplePdfUpload = (fieldName = 'files') => [
+  upload.array(fieldName, 10), // max 10 PDFs
+
+  async (req, res, next) => {
+    try {
+      if (!req.files || req.files.length === 0) {
+        return res.status(400).json({
+          success: false,
+          message: 'No files uploaded',
+        });
+      }
+
+      const results = [];
+
+      for (const file of req.files) {
+        // only pdf allowed here (extra safety)
+        if (file.mimetype !== 'application/pdf') continue;
+
+        const publicId = crypto.randomUUID();
+        const fileName = `${publicId}.pdf`;
+        const outputPath = path.join(UPLOAD_DIR, fileName);
+
+        fs.writeFileSync(outputPath, file.buffer);
+
+        results.push({
+          publicId,
+          fileName,
+          publicPath: `/uploads/${fileName}`,
+          mimeType: file.mimetype,
+        });
+      }
+
+      req.uploadedFiles = results;
+
+      next();
+    } catch (err) {
+      return res.status(500).json({
+        success: false,
+        message: err.message || 'Upload failed',
       });
     }
   },

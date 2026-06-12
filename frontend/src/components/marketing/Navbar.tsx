@@ -23,11 +23,9 @@ const links = [
 ];
 
 const icons: Record<string, string> = {
-  'individual-counselling': '🪷',
+ 
   'family-therapy': '🌿',
   'online-therapy': '💻',
-  'adlerian-integrative-therapy': '🌀',
-  'emotional-regulation': '🫧',
   'young-adult-support': '✨',
 };
 
@@ -86,23 +84,23 @@ export function Navbar() {
         'fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-[#FFFDF8]/90 backdrop-blur-xl border-b border-[#E8DDD4]'}
 
     >
-      <nav className="max-w-7xl mx-auto h-20 px-4 sm:px-6 flex items-center justify-between">
+      <nav className="max-w-7xl mx-auto h-24 px-4 sm:px-6 flex items-center justify-between">
         <Link
           href="/"
           className="flex items-center gap-3 group"
         >
-          <div className="w-11 h-11 rounded-2xl bg-[#F3EDE7] flex items-center justify-center shadow-sm">
+          <div className=" flex items-center justify-center">
             <Image
               src={logo}
               alt="logo"
-              width={28}
-              height={28}
+              width={110}
+              height={110}
               priority
               className="object-contain"
             />
           </div>
 
-          <div className="flex flex-col leading-none">
+          {/* <div className="flex flex-col leading-none">
             <span className="text-[15px] font-semibold text-[#2E2A27] tracking-wide group-hover:text-[#A06D5F] transition-colors">
               Srishti Roy
             </span>
@@ -110,7 +108,7 @@ export function Navbar() {
             <span className="text-[10px] uppercase tracking-[0.25em] text-[#7B6F68] mt-1">
               Counselling Psychologist
             </span>
-          </div>
+          </div> */}
         </Link>
 
         <ul className="hidden lg:flex items-center gap-8">
@@ -161,10 +159,7 @@ export function Navbar() {
                   href={`/services/${s.slug}`}
                   className="flex items-start gap-4 p-3 rounded-2xl hover:bg-[#FAF4EE] transition-all group"
                 >
-                  <div className="w-12 h-12 rounded-2xl bg-[#F5EEE7] flex items-center justify-center text-2xl flex-shrink-0">
-                    {icons[s.slug] ??
-                      '🌸'}
-                  </div>
+                
 
                   <div>
                     <h2 className="text-sm font-semibold text-[#2E2A27] group-hover:text-[#A06D5F] transition-colors">

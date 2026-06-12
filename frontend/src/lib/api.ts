@@ -62,7 +62,9 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
     try {
       const response = await fetch(`${BASE}${path}`, {
         ...init,
+        credentials: "include",
         headers: {
+
           'Content-Type': 'application/json',
           ...(t ? { Authorization: `Bearer ${t}` } : {}),
           ...((init.headers as Record<string, string>) ?? {}),
@@ -109,29 +111,29 @@ export class ApiClientError extends Error {
 
 // api methods type as T directly — request() handles the envelope unwrapping
 export const api = {
-  get:    <T>(path: string)                => request<T>(path),
-  post:   <T>(path: string, body?: unknown) => request<T>(path, { method: 'POST',   body: JSON.stringify(body) }),
-  patch:  <T>(path: string, body?: unknown) => request<T>(path, { method: 'PATCH',  body: JSON.stringify(body) }),
-  delete: <T>(path: string)                => request<T>(path, { method: 'DELETE' }),
+  get: <T>(path: string) => request<T>(path),
+  post: <T>(path: string, body?: unknown) => request<T>(path, { method: 'POST', body: JSON.stringify(body) }),
+  patch: <T>(path: string, body?: unknown) => request<T>(path, { method: 'PATCH', body: JSON.stringify(body) }),
+  delete: <T>(path: string) => request<T>(path, { method: 'DELETE' }),
 };
 
 // Typed API methods
 export const authApi = {
-  register:      (d: unknown)       => api.post('/auth/register', d),
-  login:         (d: unknown)       => api.post<{ user: User; accessToken: string; refreshToken: string }>('/auth/login', d),
-  logout:        (refreshToken: string) => api.post('/auth/logout', { refreshToken }),
-  forgotPassword:(email: string)    => api.post('/auth/forgot', { email }),
-  resetPassword: (d: unknown)       => api.post('/auth/reset', d),
-  me:            ()                 => api.get<User>('/auth/me'),
+  register: (d: unknown) => api.post('/auth/register', d),
+  login: (d: unknown) => api.post<{ user: User; accessToken: string; refreshToken: string }>('/auth/login', d),
+  logout: (refreshToken: string) => api.post('/auth/logout', { refreshToken }),
+  forgotPassword: (email: string) => api.post('/auth/forgot', { email }),
+  resetPassword: (d: unknown) => api.post('/auth/reset', d),
+  me: () => api.get<User>('/auth/me'),
 };
 
 export const therapistApi = {
-  list:   (params?: Record<string, string>) => api.get<Therapist[]>(`/therapists?${new URLSearchParams(params)}`),
-  bySlug: (slug: string)                    => api.get<Therapist>(`/therapists/${slug}`),
+  list: (params?: Record<string, string>) => api.get<Therapist[]>(`/therapists?${new URLSearchParams(params)}`),
+  bySlug: (slug: string) => api.get<Therapist>(`/therapists/${slug}`),
 };
 
 export const serviceApi = {
-  list:   ()             => api.get<Service[]>('/services'),
+  list: () => api.get<Service[]>('/services'),
   bySlug: (slug: string) => api.get<Service>(`/services/${slug}`),
 };
 
@@ -143,37 +145,41 @@ export const slotApi = {
       `${service ? `&service=${service}` : ''}`;
     return api.get<Slot[]>(url);
   },
-  checkSlot: (d: unknown)      => api.post<Slot>('/bookings/check-slot', d),
-  hold:      (slotId: string)  => api.post(`/bookings/slots/${slotId}/hold`),
-  release:   (slotId: string)  => api.delete(`/bookings/slots/${slotId}/hold`),
+  checkSlot: (d: unknown) => api.post<Slot>('/bookings/check-slot', d),
+  hold: (slotId: string) => api.post(`/bookings/slots/${slotId}/hold`),
+  release: (slotId: string) => api.delete(`/bookings/slots/${slotId}/hold`),
 };
 
 export const bookingApi = {
-  book:           (d: unknown)                          => api.post<Appointment>('/bookings', d),
-  myAppointments: ()                                    => api.get<Appointment[]>('/bookings/me'),
-  cancel:         (id: string, reason?: string)         => api.patch(`/bookings/${id}/cancel`, { reason }),
-  reschedule:     (id: string, newSlotId: string)       => api.patch(`/bookings/${id}/reschedule`, { newSlotId }),
+  book: (d: unknown) => api.post<Appointment>('/bookings', d),
+  myAppointments: () => api.get<Appointment[]>('/bookings/me'),
+  cancel: (id: string, reason?: string) => api.patch(`/bookings/${id}/cancel`, { reason }),
+  reschedule: (id: string, newSlotId: string) => api.patch(`/bookings/${id}/reschedule`, { newSlotId }),
+  initiatePayment: (d: unknown) => api.post<{ appointment: Appointment; txn: any; order: any }>('/bookings/initiate-payment', d),
+  upload: (d: unknown) => api.post<{ appointment: Appointment; txn: any; order: any }>('/bookings/initiate-payment', d),
+
+  verifyPayment: (d: unknown) => api.post<{ appt: Appointment; txn: any }>('/bookings/verify-payment', d),
 };
 
 export const blogApi = {
-  list:   (page = 1, tag?: string) => api.get<{ items: Blog[]; total: number }>(`/blogs?page=${page}${tag ? `&tag=${tag}` : ''}`),
-  bySlug: (slug: string)           => api.get<Blog>(`/blogs/${slug}`),
+  list: (page = 1, tag?: string) => api.get<{ items: Blog[]; total: number }>(`/blogs?page=${page}${tag ? `&tag=${tag}` : ''}`),
+  bySlug: (slug: string) => api.get<Blog>(`/blogs/${slug}`),
 };
 
 export const publicApi = {
-  testimonials: ()             => api.get<Testimonial[]>('/testimonials'),
-  faqs:         ()             => api.get<Faq[]>('/faqs'),
-  contact:      (d: unknown)   => api.post('/contact', d),
-  seo:          (page: string) => api.get<SeoMeta>(`/seo/${page}`),
+  testimonials: () => api.get<Testimonial[]>('/testimonials'),
+  faqs: () => api.get<Faq[]>('/faqs'),
+  contact: (d: unknown) => api.post('/contact', d),
+  seo: (page: string) => api.get<SeoMeta>(`/seo/${page}`),
 };
 
 // Types
-export type User        = { _id: string; name: string; email: string; role: string; avatar?: { url: string }; isEmailVerified: boolean };
-export type Therapist   = { _id: string; slug: string; title: string; bio: string; shortBio: string; specializations: string[]; languages: string[]; consultationFee: { amount: number; currency: string }; defaultSlotDurationMin: number; user: { name: string; avatar?: { url: string } }; rating: { avg: number; count: number } };
-export type Service     = { _id: string; slug: string; name: string; shortDesc: string; description: string; durationMin: number; price: { amount: number; currency: string }; modes: string[]; category: string };
-export type Slot        = { _id: string; startAt: string; endAt: string; durationMin: number; mode: string; status: string };
+export type User = { _id: string; name: string; email: string; role: string; avatar?: { url: string }; isEmailVerified: boolean };
+export type Therapist = { _id: string; slug: string; title: string; bio: string; shortBio: string; specializations: string[]; languages: string[]; consultationFee: { amount: number; currency: string }; defaultSlotDurationMin: number; user: { name: string; avatar?: { url: string } }; rating: { avg: number; count: number } };
+export type Service = { _id: string; slug: string; name: string; shortDesc: string; description: string; durationMin: number; price: { amount: number; currency: string }; modes: string[]; category: string };
+export type Slot = { _id: string; startAt: string; endAt: string; durationMin: number; mode: string; status: string };
 export type Appointment = { _id: string; bookingCode: string; startAt: string; endAt: string; status: string; mode: string; therapist: Partial<Therapist>; service?: Partial<Service> };
-export type Blog        = { _id: string; slug: string; title: string; excerpt: string; coverImage?: { url: string; alt: string }; publishedAt: string; tags: string[]; readingTimeMin?: number };
+export type Blog = { _id: string; slug: string; title: string; excerpt: string; coverImage?: { url: string; alt: string }; publishedAt: string; tags: string[]; readingTimeMin?: number };
 export type Testimonial = { _id: string; authorName: string; rating: number; text: string };
-export type Faq         = { _id: string; question: string; answer: string; category: string; order: number };
-export type SeoMeta     = { title: string; description: string; keywords: string[]; ogImage?: string; jsonLd?: Record<string, unknown> };
+export type Faq = { _id: string; question: string; answer: string; category: string; order: number };
+export type SeoMeta = { title: string; description: string; keywords: string[]; ogImage?: string; jsonLd?: Record<string, unknown> };

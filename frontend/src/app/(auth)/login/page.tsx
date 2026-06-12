@@ -106,7 +106,7 @@ const { setAuth } = useAuthStore();
 
           <div className="w-full max-w-sm mx-auto">
             <div className="mb-10 anim-up anim-d1">
-              <p className="text-[10px] text-[#9B7AD9] uppercase tracking-[0.25em] mb-3 font-medium">Welcome back</p>
+              <p className="text-[10px] text-[#9B7AD9] uppercase tracking-[0.25em] mb-3 font-medium">Start Your Therapy Journey</p>
               <h1 className="font-cormorant text-5xl text-[#1C1629] leading-tight font-light">
                 Sign <em>in</em>
               </h1>

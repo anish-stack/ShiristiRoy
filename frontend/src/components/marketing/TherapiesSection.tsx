@@ -1,14 +1,51 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Brain, Heart, Wind, Users, Smile, Leaf } from 'lucide-react';
+import Link from 'next/link';
 
 const therapies = [
-    { icon: Brain, label: 'Cognitive Behavioural', tag: 'CBT', desc: 'Reshape thought patterns to change behaviour and mood.' },
-    { icon: Heart, label: 'Adlerian Therapy', tag: 'Adlerian', desc: 'Understand social belonging and life goals.' },
-    { icon: Wind, label: 'Mindfulness-Based', tag: 'MBSR', desc: 'Present-moment awareness for stress reduction.' },
-    { icon: Users, label: 'Group Therapy', tag: 'Group', desc: 'Heal through shared experiences and peer support.' },
-    { icon: Smile, label: 'Positive Psychology', tag: 'PsyPos', desc: 'Build on strengths, not just fix weaknesses.' },
-    { icon: Leaf, label: 'Integrative Approach', tag: 'Integrative', desc: 'Combining methods tailored to your whole self.' },
+    {
+        icon: Brain,
+        label: 'Cognitive Behavioural',
+        tag: 'CBT',
+        route: '/therapy/cognitive-behavioural',
+        desc: 'Reshape thought patterns to change behaviour and mood.',
+    },
+    {
+        icon: Heart,
+        label: 'Adlerian Therapy',
+        tag: 'Adlerian',
+        route: '/therapy/adlerian-therapy',
+        desc: 'Understand social belonging and life goals.',
+    },
+    {
+        icon: Wind,
+        label: 'Mindfulness-Based',
+        tag: 'MBSR',
+        route: '/therapy/mindfulness-based',
+        desc: 'Present-moment awareness for stress reduction.',
+    },
+    {
+        icon: Users,
+        label: 'Group Therapy',
+        tag: 'Group',
+        route: '/therapy/group-therapy',
+        desc: 'Heal through shared experiences and peer support.',
+    },
+    {
+        icon: Smile,
+        label: 'Positive Psychology',
+        tag: 'PsyPos',
+        route: '/therapy/positive-psychology',
+        desc: 'Build on strengths, not just fix weaknesses.',
+    },
+    {
+        icon: Leaf,
+        label: 'Integrative Approach',
+        tag: 'Integrative',
+        route: '/therapy/integrative-approach',
+        desc: 'Combining methods tailored to your whole self.',
+    },
 ];
 
 const TherapiesSection = () => {
@@ -66,53 +103,61 @@ const TherapiesSection = () => {
 
                 {/* Cards */}
                 <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                    {therapies.map((t, i) => {
-                        const Icon = t.icon;
+                    {therapies.map((therapy, index) => {
+                        const Icon = therapy.icon;
+
                         return (
-                            <motion.div
-                                key={i}
-                                initial={{ opacity: 0, y: 24 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                transition={{ delay: i * 0.1, duration: 0.55 }}
-                                viewport={{ once: true }}
-                                whileHover={{ y: -6, transition: { duration: 0.25 } }}
-                                className="group relative overflow-hidden rounded-3xl border border-[#E8DEFA] bg-white/80 p-7 shadow-sm backdrop-blur-sm transition-shadow duration-300 hover:border-[#CDB9F3] hover:shadow-xl hover:shadow-[#9B7AD9]/10"
+                            <Link
+                                key={therapy.route}
+                                href={therapy.route}
+                                className="block cursor-pointer"
                             >
-                                {/* Number watermark */}
-                                <span
-                                    className="absolute right-5 top-4 text-6xl font-bold leading-none text-[#F0E9FF] transition-colors duration-300 group-hover:text-[#E8DDF9]"
-                                    style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
+                                <motion.div
+                                    initial={{ opacity: 0, y: 24 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: index * 0.1, duration: 0.55 }}
+                                    viewport={{ once: true }}
+                                    whileHover={{ y: -6, transition: { duration: 0.25 } }}
+                                    className="group relative overflow-hidden rounded-3xl border border-[#E8DEFA] bg-white/80 p-7 shadow-sm backdrop-blur-sm transition-shadow duration-300 hover:border-[#CDB9F3] hover:shadow-xl hover:shadow-[#9B7AD9]/10"
                                 >
-                                    {String(i + 1).padStart(2, '0')}
-                                </span>
+                                    {/* Number watermark */}
+                                    <span
+                                        className="absolute right-5 top-4 text-6xl font-bold leading-none text-[#F0E9FF] transition-colors duration-300 group-hover:text-[#E8DDF9]"
+                                        style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
+                                    >
+                                        {String(index + 1).padStart(2, "0")}
+                                    </span>
 
-                                {/* Glow orb */}
-                                <div className="absolute -right-8 -top-8 h-28 w-28 rounded-full bg-gradient-to-br from-[#9B7AD9]/10 to-[#D9698A]/5 blur-2xl transition-all duration-500 group-hover:scale-150 group-hover:from-[#9B7AD9]/20" />
+                                    {/* Glow orb */}
+                                    <div className="absolute -right-8 -top-8 h-28 w-28 rounded-full bg-gradient-to-br from-[#9B7AD9]/10 to-[#D9698A]/5 blur-2xl transition-all duration-500 group-hover:scale-150 group-hover:from-[#9B7AD9]/20" />
 
-                                {/* Icon */}
-                                <div className="relative mb-5 flex h-13 w-13 items-center justify-center rounded-2xl bg-gradient-to-br from-[#F3ECFF] to-[#E8DDF9] p-3 shadow-inner transition-transform duration-300 group-hover:scale-110">
-                                    <Icon size={24} className="text-[#9B7AD9]" />
-                                </div>
+                                    {/* Icon */}
+                                    <div className="relative mb-5 flex h-13 w-13 items-center justify-center rounded-2xl bg-gradient-to-br from-[#F3ECFF] to-[#E8DDF9] p-3 shadow-inner transition-transform duration-300 group-hover:scale-110">
+                                        <Icon size={24} className="text-[#9B7AD9]" />
+                                    </div>
 
-                                {/* Tag */}
-                                <span className="mb-2 inline-block rounded-full bg-[#F3ECFF] px-3 py-0.5 text-[0.65rem] font-bold uppercase tracking-wider text-[#9B7AD9]">
-                                    {t.tag}
-                                </span>
+                                    {/* Tag */}
+                                    <span className="mb-2 inline-block rounded-full bg-[#F3ECFF] px-3 py-0.5 text-[0.65rem] font-bold uppercase tracking-wider text-[#9B7AD9]">
+                                        {therapy.tag}
+                                    </span>
 
-                                {/* Label */}
-                                <h3
-                                    className="mb-2 text-lg font-bold text-[#2A2535]"
-                                    style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
-                                >
-                                    {t.label}
-                                </h3>
+                                    {/* Title */}
+                                    <h3
+                                        className="mb-2 text-lg font-bold text-[#2A2535]"
+                                        style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
+                                    >
+                                        {therapy.label}
+                                    </h3>
 
-                                {/* Desc */}
-                                <p className="text-sm leading-relaxed text-[#7B7488]">{t.desc}</p>
+                                    {/* Description */}
+                                    <p className="text-sm leading-relaxed text-[#7B7488]">
+                                        {therapy.desc}
+                                    </p>
 
-                                {/* Bottom accent line */}
-                                <div className="mt-6 h-px w-0 bg-gradient-to-r from-[#9B7AD9] to-[#D9698A] transition-all duration-500 group-hover:w-full" />
-                            </motion.div>
+                                    {/* Bottom accent line */}
+                                    <div className="mt-6 h-px w-0 bg-gradient-to-r from-[#9B7AD9] to-[#D9698A] transition-all duration-500 group-hover:w-full" />
+                                </motion.div>
+                            </Link>
                         );
                     })}
                 </div>

@@ -47,14 +47,7 @@ async function getData() {
 export default async function HomePage() {
   const { testimonials, faqs, services } = await getData();
 
-  const serviceIcons: Record<string, string> = {
-    "individual-counselling": "🪷",
-    "family-therapy": "🌿",
-    "online-therapy": "💻",
-    "adlerian-integrative-therapy": "🌀",
-    "emotional-regulation": "🫧",
-    "young-adult-support": "✨",
-  };
+
 
   return (
     <>
@@ -70,7 +63,7 @@ export default async function HomePage() {
       <Hero />
 
       {/* ── APPROACH STRIP ── */}
-      <section className="bg-brand-lavender text-white py-5 overflow-hidden">
+      <section className="bg-brand-lavender text-gray-900 py-5 overflow-hidden">
         <div className="flex animate-[marquee_30s_linear_infinite] whitespace-nowrap">
           {[
             "Adlerian-Informed",
@@ -84,11 +77,11 @@ export default async function HomePage() {
           ].flatMap((t) => [
             <span
               key={t + "1"}
-              className="inline-block mx-8 text-sm tracking-widest uppercase opacity-80"
+              className="inline-block mx-8 text-dark-900 text-sm tracking-widest uppercase opacity-80"
             >
               {t}
             </span>,
-            <span key={t + "dot"} className="inline-block text-white/40 mx-2">
+            <span key={t + "dot"} className="inline-block text-gray-900 mx-2">
               ◆
             </span>,
           ])}
@@ -102,214 +95,6 @@ export default async function HomePage() {
       {/* ── SERVICES ── */}
       <Services />
 
-      {testimonials.length > 0 && (
-        <section
-          className="relative overflow-hidden py-24 px-6"
-          style={{ background: "#F5EEE8" }}
-        >
-          {/* Sunray background */}
-          <div className="pointer-events-none absolute -top-20 -right-20 opacity-[0.06]">
-            <svg width="400" height="400" viewBox="0 0 400 400">
-              <g transform="translate(200,200)">
-                <circle r="60" fill="none" stroke="#7A9E7E" strokeWidth="1.5" />
-                <circle r="90" fill="none" stroke="#7A9E7E" strokeWidth=".8" />
-                <circle r="120" fill="none" stroke="#7A9E7E" strokeWidth=".5" />
-                <circle r="150" fill="none" stroke="#7A9E7E" strokeWidth=".4" />
-                <circle r="180" fill="none" stroke="#7A9E7E" strokeWidth=".3" />
-                <circle r="8" fill="#7A9E7E" />
-                {Array.from({ length: 24 }).map((_, i) => {
-                  const a = (i / 24) * Math.PI * 2;
-                  return (
-                    <line
-                      key={i}
-                      x1={Math.cos(a) * 65}
-                      y1={Math.sin(a) * 65}
-                      x2={Math.cos(a) * 185}
-                      y2={Math.sin(a) * 185}
-                      stroke="#7A9E7E"
-                      strokeWidth={i % 3 === 0 ? "1.2" : ".5"}
-                    />
-                  );
-                })}
-              </g>
-            </svg>
-          </div>
-
-          <div className="max-w-5xl mx-auto">
-            {/* Header */}
-            <div className="text-center mb-14">
-              <span
-                className="inline-flex items-center gap-1.5 text-[11px] tracking-[.25em] uppercase font-normal"
-                style={{ color: "#7A9E7E" }}
-              >
-                {/* Sunray icon */}
-                <svg
-                  width="14"
-                  height="14"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                >
-                  <circle cx="12" cy="12" r="4" />
-                  <line x1="12" y1="2" x2="12" y2="5" />
-                  <line x1="12" y1="19" x2="12" y2="22" />
-                  <line x1="2" y1="12" x2="5" y2="12" />
-                  <line x1="19" y1="12" x2="22" y2="12" />
-                  <line x1="4.9" y1="4.9" x2="7.1" y2="7.1" />
-                  <line x1="16.9" y1="16.9" x2="19.1" y2="19.1" />
-                  <line x1="19.1" y1="4.9" x2="16.9" y2="7.1" />
-                  <line x1="7.1" y1="16.9" x2="4.9" y2="19.1" />
-                </svg>
-                Healing journeys
-              </span>
-              <h2
-                className="mt-2 font-serif text-[2.8rem] font-light leading-tight"
-                style={{ color: "#2C2C28" }}
-              >
-                What clients <em>share</em>
-              </h2>
-            </div>
-
-            {/* Cards */}
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {testimonials.map((t) => (
-                <div
-                  key={t._id}
-                  className="relative rounded-[20px] p-8"
-                  style={{
-                    background: "#FDFCF9",
-                    border: "1px solid rgba(122,158,126,.15)",
-                  }}
-                >
-                  {/* Top line accent */}
-                  <div
-                    className="absolute top-0 left-8 right-8 h-[2px] rounded-full"
-                    style={{
-                      background:
-                        "linear-gradient(90deg,transparent,#C8DEC9,transparent)",
-                    }}
-                  />
-
-                  {/* Lotus icon */}
-                  <div className="mb-5 opacity-70">
-                    <svg width="28" height="28" viewBox="0 0 40 40" fill="none">
-                      <ellipse
-                        cx="20"
-                        cy="28"
-                        rx="5"
-                        ry="9"
-                        fill="#C8DEC9"
-                        opacity=".7"
-                      />
-                      <ellipse
-                        cx="20"
-                        cy="28"
-                        rx="5"
-                        ry="9"
-                        fill="#C8DEC9"
-                        opacity=".5"
-                        transform="rotate(-30 20 28)"
-                      />
-                      <ellipse
-                        cx="20"
-                        cy="28"
-                        rx="5"
-                        ry="9"
-                        fill="#C8DEC9"
-                        opacity=".5"
-                        transform="rotate(30 20 28)"
-                      />
-                      <ellipse
-                        cx="20"
-                        cy="28"
-                        rx="5"
-                        ry="9"
-                        fill="#7A9E7E"
-                        opacity=".6"
-                        transform="rotate(-60 20 28)"
-                      />
-                      <ellipse
-                        cx="20"
-                        cy="28"
-                        rx="5"
-                        ry="9"
-                        fill="#7A9E7E"
-                        opacity=".6"
-                        transform="rotate(60 20 28)"
-                      />
-                      <circle cx="20" cy="22" r="4" fill="#7A9E7E" />
-                    </svg>
-                  </div>
-
-                  {/* Stars */}
-                  <div className="flex gap-1 mb-4">
-                    {Array.from({ length: t.rating }).map((_, i) => (
-                      <svg
-                        key={i}
-                        width="13"
-                        height="13"
-                        viewBox="0 0 24 24"
-                        style={{ fill: "#C9A84C" }}
-                      >
-                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                      </svg>
-                    ))}
-                  </div>
-
-                  <p
-                    className="font-serif text-[1.2rem] font-light leading-relaxed italic mb-5"
-                    style={{ color: "#2C2C28" }}
-                  >
-                    &ldquo;{t.text}&rdquo;
-                  </p>
-                  <p
-                    className="text-[12px] tracking-[.12em] uppercase"
-                    style={{ color: "#9E9E94" }}
-                  >
-                    — {t.authorName}
-                  </p>
-
-                  {/* Leaf watermark */}
-                  <svg
-                    className="absolute bottom-4 right-5 opacity-[.12]"
-                    width="48"
-                    height="48"
-                    viewBox="0 0 48 48"
-                    fill="none"
-                  >
-                    <path d="M8 40 Q24 4 44 8 Q40 28 8 40Z" fill="#7A9E7E" />
-                    <line
-                      x1="8"
-                      y1="40"
-                      x2="44"
-                      y2="8"
-                      stroke="#5d8661"
-                      strokeWidth="1"
-                    />
-                    <line
-                      x1="20"
-                      y1="22"
-                      x2="32"
-                      y2="16"
-                      stroke="#5d8661"
-                      strokeWidth=".7"
-                    />
-                    <line
-                      x1="14"
-                      y1="32"
-                      x2="28"
-                      y2="24"
-                      stroke="#5d8661"
-                      strokeWidth=".7"
-                    />
-                  </svg>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
 
       {/* ── FAQ ──────────────────────────────────────────────────────── */}
       {faqs.length > 0 && (
@@ -387,7 +172,7 @@ export default async function HomePage() {
                 className="mt-2 font-serif text-[2.8rem] font-light leading-tight"
                 style={{ color: "#2C2C28" }}
               >
-                Things people <em>wonder</em>
+                Frequently Asked Questions
               </h2>
             </div>
 

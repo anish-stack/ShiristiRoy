@@ -353,7 +353,7 @@
             </Btn>
 
             <Btn
-              variant="primary"
+              variant="danger"
               onClick={()=>
                 setGenOpen(true)
               }
@@ -726,7 +726,7 @@
               </Btn>
 
               <Btn
-                variant="primary"
+                variant="default"
                 loading={genLoading}
                 onClick={
                   generateSlots

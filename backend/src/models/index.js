@@ -73,6 +73,8 @@ const transactionSchema = new mongoose.Schema({
   provider: { type: String, enum: ['razorpay', 'manual', 'free'], default: 'razorpay' },
   providerOrderId: String,
   providerPaymentId: String,
+  intakeForm: String,
+  consentDone: String,
   providerSignature: String,
   amount: { type: Number, required: true },
   currency: { type: String, default: 'INR' },
