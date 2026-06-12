@@ -1,585 +1,249 @@
 'use client';
 
-import {
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
-
+import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
-
+import { useRouter } from 'next/navigation';
 import {
-  useRouter,
-} from 'next/navigation';
-
-import {
-  Loader2,
-  Calendar,
-  Clock3,
-  Video,
-  MapPin,
-  XCircle,
-  ArrowRight,
-  CheckCircle2,
-  LayoutDashboard,
-  Sparkles,
-  LogOut,
-  AlertCircle,
-  BookHeart,
+  Loader2, Calendar, Clock3, Video, MapPin,
+  ArrowRight, LayoutDashboard, Sparkles, LogOut,
+  AlertCircle, BookHeart, ChevronRight, CheckCircle2,
+  XCircle, AlertTriangle,
 } from 'lucide-react';
+import { bookingApi, type Appointment } from '@/lib/api';
+import { useAuthStore } from '@/store/auth.store';
+import { formatDate, formatTime, cn } from '@/lib/utils';
+import { toast } from '@/components/ui/Toaster';
 
-import {
-  bookingApi,
-  type Appointment,
-} from '@/lib/api';
+/* ─── helpers ──────────────────────────────────────────────────── */
 
-import {
-  useAuthStore,
-} from '@/store/auth.store';
-
-import {
-  formatDate,
-  formatTime,
-  cn,
-} from '@/lib/utils';
-
-import {
-  toast,
-} from '@/components/ui/Toaster';
-
-const statusStyle: Record<
-  string,
-  string
-> = {
-  pending:
-    'bg-amber-50 text-amber-700 border-amber-200',
-
-  confirmed:
-    'bg-emerald-50 text-emerald-700 border-emerald-200',
-
-  completed:
-    'bg-sky-50 text-sky-700 border-sky-200',
-
-  cancelled:
-    'bg-red-50 text-red-600 border-red-200',
-
-  no_show:
-    'bg-zinc-100 text-zinc-500 border-zinc-200',
+const STATUS_PILL: Record<string, { bg: string; text: string; dot: string }> = {
+  pending:   { bg: '#FEF9EC', text: '#B45309', dot: '#F59E0B' },
+  confirmed: { bg: '#ECFDF5', text: '#065F46', dot: '#10B981' },
+  completed: { bg: '#EFF6FF', text: '#1D4ED8', dot: '#3B82F6' },
+  cancelled: { bg: '#FEF2F2', text: '#B91C1C', dot: '#EF4444' },
+  no_show:   { bg: '#F4F4F5', text: '#52525B', dot: '#A1A1AA' },
 };
 
-export default function DashboardPage() {
-  const {
-    user,
-    clearAuth,
-  } = useAuthStore();
+function StatusPill({ status }: { status: string }) {
+  const s = STATUS_PILL[status] ?? STATUS_PILL.no_show;
+  return (
+    <span style={{
+      display: 'inline-flex', alignItems: 'center', gap: 5,
+      padding: '3px 10px', borderRadius: 99,
+      background: s.bg, color: s.text,
+      fontSize: 11, fontWeight: 600, letterSpacing: '0.03em',
+    }}>
+      <span style={{ width: 6, height: 6, borderRadius: '50%', background: s.dot, display: 'inline-block' }} />
+      {status.replace('_', ' ')}
+    </span>
+  );
+}
 
+function formsMissing(a: any) {
+  return (
+    ['pending', 'confirmed'].includes(a.status) &&
+    (!a.payment?.intakeForm || !a.payment?.consent)
+  );
+}
+
+/* ─── component ─────────────────────────────────────────────────── */
+
+export default function DashboardPage() {
+  const { user, clearAuth, fetchMe } = useAuthStore();
   const router = useRouter();
 
-  const [
-    appointments,
-    setAppointments,
-  ] = useState<
-    Appointment[]
-  >([]);
+  const [appointments, setAppointments] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const [
-    loading,
-    setLoading,
-  ] = useState(true);
+  useEffect(() => { fetchMe(); }, []);
 
   useEffect(() => {
-    if (!user) {
-      router.push(
-        '/login?next=/dashboard'
-      );
-
-      return;
-    }
-
-    bookingApi
-      .myAppointments()
-      .then((res: any) => {
-        setAppointments(
-          res?.data || []
-        );
-      })
-      .catch(() => {
-        toast(
-          'Failed to load appointments',
-          'error'
-        );
-      })
-      .finally(() =>
-        setLoading(false)
-      );
+    if (!user) { router.push('/login?next=/dashboard'); return; }
+    bookingApi.myAppointments()
+      .then((res: any) => setAppointments(res || []))
+      .catch(() => toast('Failed to load appointments', 'error'))
+      .finally(() => setLoading(false));
   }, [user, router]);
 
-  const cancel =
-    async (id: string) => {
-      const confirmed =
-        confirm(
-          'Cancel this appointment?'
-        );
+  const upcoming = useMemo(() =>
+    appointments.filter(a => ['pending', 'confirmed'].includes(a.status)), [appointments]);
+  const past = useMemo(() =>
+    appointments.filter(a => !['pending', 'confirmed'].includes(a.status)), [appointments]);
 
-      if (!confirmed) return;
+  const formsAlerts = upcoming.filter(formsMissing);
 
-      try {
-        await bookingApi.cancel(
-          id,
-          'Cancelled by client'
-        );
-
-        setAppointments((prev) =>
-          prev.map((a) =>
-            a._id === id
-              ? {
-                  ...a,
-                  status:
-                    'cancelled',
-                }
-              : a
-          )
-        );
-
-        toast(
-          'Appointment cancelled',
-          'success'
-        );
-      } catch (e: any) {
-        toast(
-          e.message ||
-            'Could not cancel appointment',
-          'error'
-        );
-      }
-    };
-
-  const upcoming =
-    useMemo(
-      () =>
-        appointments.filter((a) =>
-          [
-            'pending',
-            'confirmed',
-          ].includes(a.status)
-        ),
-      [appointments]
-    );
-
-  const past = useMemo(
-    () =>
-      appointments.filter(
-        (a) =>
-          ![
-            'pending',
-            'confirmed',
-          ].includes(a.status)
-      ),
-    [appointments]
+  if (!user) return (
+    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <Loader2 size={28} style={{ color: '#9b8ec4', animation: 'spin 1s linear infinite' }} />
+      <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
+    </div>
   );
 
-  if (!user) return null;
-
   return (
-    <div className="min-h-screen bg-[#F8F6F2] pt-28 pb-20 px-4 overflow-hidden">
-      {/* Ambient Glow */}
-      <div className="fixed inset-0 pointer-events-none opacity-50">
-        <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-[#CBB8D7]/20 rounded-full blur-[120px]" />
+    <div style={{
+      minHeight: '100vh', background: '#F8F5F2',
+      backgroundImage: 'radial-gradient(circle at 20% 10%, rgba(155,142,196,0.07) 0%, transparent 50%), radial-gradient(circle at 80% 90%, rgba(122,158,126,0.07) 0%, transparent 50%)',
+      paddingTop: 96, paddingBottom: 64, paddingLeft: 16, paddingRight: 16,
+      fontFamily: "'DM Sans', sans-serif",
+    }}>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap');
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes fadeUp { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+        .appt-row:hover { box-shadow: 0 8px 32px rgba(155,142,196,0.13) !important; transform: translateY(-1px); }
+        .appt-row { transition: all 0.2s ease; }
+        .quick-card:hover { box-shadow: 0 10px 40px rgba(0,0,0,0.07) !important; transform: translateY(-2px); }
+        .quick-card { transition: all 0.22s ease; }
+        .fade-in { animation: fadeUp 0.35s ease both; }
+      `}</style>
 
-        <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-[#D8C7B5]/20 rounded-full blur-[120px]" />
-      </div>
+      <div style={{ maxWidth: 900, margin: '0 auto' }}>
 
-      <div className="relative max-w-6xl mx-auto">
-        {/* HEADER */}
-        <div className="relative overflow-hidden rounded-[36px] bg-gradient-to-br from-[#2D2A26] via-[#3A342D] to-[#4A433A] p-8 md:p-12 mb-10 text-white shadow-[0_20px_80px_rgba(0,0,0,0.08)]">
-          <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_top_right,#fff,transparent_35%)]" />
-
-          <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-8">
-            <div>
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/10 text-sm text-white/80 mb-5 backdrop-blur">
-                <Sparkles
-                  size={16}
-                />
-
-                Wellness Dashboard
-              </div>
-
-              <h1 className="text-4xl md:text-5xl font-bold leading-tight">
-                Welcome back,
-                <br />
-
-                <span className="text-[#E9D7C3]">
-                  {
-                    user.name.split(
-                      ' '
-                    )[0]
-                  }
-                </span>
-              </h1>
-
-              <p className="mt-5 max-w-2xl text-white/70 text-lg leading-8">
-                Manage your
-                therapy sessions,
-                appointments, and
-                wellness journey
-                from one calm and
-                secure space.
-              </p>
+        {/* ── header ──────────────────────────────────────────── */}
+        <div className="fade-in" style={{
+          borderRadius: 28, marginBottom: 28, padding: '32px 36px',
+          background: 'linear-gradient(135deg, #2D2A26 0%, #3f3729 60%, #4a3f55 100%)',
+          boxShadow: '0 20px 60px rgba(0,0,0,0.12)',
+          display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: 20,
+        }}>
+          <div>
+            <div style={{
+              display: 'inline-flex', alignItems: 'center', gap: 6,
+              padding: '4px 12px', borderRadius: 99,
+              background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.1)',
+              fontSize: 11, color: 'rgba(255,255,255,0.6)', letterSpacing: '0.1em', textTransform: 'uppercase',
+              marginBottom: 14,
+            }}>
+              <Sparkles size={11} /> Wellness Dashboard
             </div>
+            <h1 style={{ fontFamily: "'Lora', serif", fontSize: 30, fontWeight: 500, color: '#fff', margin: '0 0 6px', lineHeight: 1.2 }}>
+              Welcome back, <span style={{ color: '#E9D7C3' }}>{user.name.split(' ')[0]}</span>
+            </h1>
+            <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', margin: 0 }}>
+              Your therapy sessions and wellness journey in one place.
+            </p>
+          </div>
 
-            <div className="flex flex-wrap gap-3">
-              {user?.role ===
-                'admin' && (
-                <Link
-                  href="/admin"
-                  className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-[#E9D7C3] hover:bg-white text-[#2D2A26] font-semibold transition-all duration-300 shadow-lg"
-                >
-                  <LayoutDashboard
-                    size={18}
-                  />
-
-                  Admin Panel
-                </Link>
-              )}
-
-              <button
-                onClick={() => {
-                  clearAuth();
-
-                  router.push(
-                    '/'
-                  );
-                }}
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl border border-white/10 bg-white/5 hover:bg-white/10 text-white transition-all duration-300"
-              >
-                <LogOut
-                  size={18}
-                />
-
-                Sign Out
-              </button>
-            </div>
+          <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+            {user?.role === 'admin' && (
+              <Link href="/admin" style={{
+                display: 'inline-flex', alignItems: 'center', gap: 7,
+                padding: '9px 18px', borderRadius: 12,
+                background: '#E9D7C3', color: '#2D2A26',
+                fontSize: 13, fontWeight: 600, textDecoration: 'none',
+              }}>
+                <LayoutDashboard size={15} /> Admin
+              </Link>
+            )}
+            <button onClick={() => { clearAuth(); router.push('/'); }} style={{
+              display: 'inline-flex', alignItems: 'center', gap: 7,
+              padding: '9px 18px', borderRadius: 12,
+              background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.1)',
+              color: 'rgba(255,255,255,0.7)', fontSize: 13, cursor: 'pointer', fontFamily: 'inherit',
+            }}>
+              <LogOut size={15} /> Sign out
+            </button>
           </div>
         </div>
 
-        {/* QUICK ACTIONS */}
-        <div className="grid md:grid-cols-3 gap-5 mb-12">
+        {/* ── forms alert banner ───────────────────────────────── */}
+        {formsAlerts.length > 0 && (
+          <div className="fade-in" style={{
+            borderRadius: 16, marginBottom: 24, padding: '14px 18px',
+            background: '#FFFBEB', border: '1.5px solid #FCD34D',
+            display: 'flex', alignItems: 'flex-start', gap: 12,
+          }}>
+            <AlertTriangle size={18} style={{ color: '#D97706', flexShrink: 0, marginTop: 1 }} />
+            <div style={{ flex: 1 }}>
+              <p style={{ fontSize: 13, fontWeight: 600, color: '#92400E', margin: '0 0 2px' }}>
+                Action required — forms not uploaded
+              </p>
+              <p style={{ fontSize: 12, color: '#B45309', margin: 0, lineHeight: 1.5 }}>
+                {formsAlerts.length === 1
+                  ? `Booking ${formsAlerts[0].bookingCode} is missing intake / consent forms.`
+                  : `${formsAlerts.length} upcoming sessions are missing intake / consent forms.`
+                } Upload at least 24 hrs before your session.
+              </p>
+            </div>
+            <Link href={`/dashboard/appointments/${formsAlerts[0]._id}`} style={{
+              display: 'inline-flex', alignItems: 'center', gap: 4,
+              padding: '6px 12px', borderRadius: 8,
+              background: '#FEF3C7', border: '1px solid #FCD34D',
+              color: '#92400E', fontSize: 12, fontWeight: 600, textDecoration: 'none', flexShrink: 0,
+            }}>
+              Upload <ChevronRight size={12} />
+            </Link>
+          </div>
+        )}
+
+        {/* ── quick actions ────────────────────────────────────── */}
+        <div className="fade-in" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 14, marginBottom: 36 }}>
           {[
-            {
-              href: '/book',
-              label:
-                'Book Session',
-              desc: 'Schedule your next therapy appointment.',
-              icon: Calendar,
-              bg: 'bg-[#F1E9FF]',
-              iconColor:
-                'text-[#8A63D2]',
-            },
-
-            {
-              href: '/services',
-              label:
-                'Explore Services',
-              desc: 'Discover therapy and counselling options.',
-              icon: BookHeart,
-              bg: 'bg-[#EAF8F1]',
-              iconColor:
-                'text-[#4D9B72]',
-            },
-
-            {
-              href: '/contact',
-              label:
-                'Need Support?',
-              desc: 'Reach out for guidance and help.',
-              icon: AlertCircle,
-              bg: 'bg-[#FFF4EA]',
-              iconColor:
-                'text-[#D18442]',
-            },
-          ].map(
-            ({
-              href,
-              label,
-              desc,
-              icon: Icon,
-              bg,
-              iconColor,
-            }) => (
-              <Link
-                key={href}
-                href={href}
-                className="group relative overflow-hidden rounded-[28px] bg-white border border-[#ECE6DC] p-6 hover:shadow-[0_20px_50px_rgba(0,0,0,0.06)] transition-all duration-500"
-              >
-                <div
-                  className={cn(
-                    'w-14 h-14 rounded-2xl flex items-center justify-center mb-5',
-                    bg
-                  )}
-                >
-                  <Icon
-                    size={24}
-                    className={
-                      iconColor
-                    }
-                  />
-                </div>
-
-                <h3 className="text-xl font-semibold text-[#2D2A26] mb-2">
-                  {label}
-                </h3>
-
-                <p className="text-[#6E665D] leading-7 text-sm">
-                  {desc}
-                </p>
-
-                <div className="mt-5 inline-flex items-center gap-2 text-[#8A63D2] font-medium">
-                  Explore
-
-                  <ArrowRight
-                    size={16}
-                    className="group-hover:translate-x-1 transition-transform duration-300"
-                  />
-                </div>
-              </Link>
-            )
-          )}
+            { href: '/book', label: 'Book a session', desc: 'Schedule your next appointment.', icon: Calendar, accent: '#9b8ec4', bg: 'rgba(155,142,196,0.08)' },
+            { href: '/services', label: 'Explore services', desc: 'Discover therapy options.', icon: BookHeart, accent: '#7a9e7e', bg: 'rgba(122,158,126,0.08)' },
+            { href: '/contact', label: 'Need support?', desc: 'Reach out for guidance.', icon: AlertCircle, accent: '#c48e7a', bg: 'rgba(196,142,122,0.08)' },
+          ].map(({ href, label, desc, icon: Icon, accent, bg }) => (
+            <Link key={href} href={href} className="quick-card" style={{
+              padding: '20px', borderRadius: 18,
+              background: '#fff', border: '1px solid rgba(0,0,0,0.06)',
+              textDecoration: 'none', display: 'block',
+            }}>
+              <div style={{ width: 38, height: 38, borderRadius: 10, background: bg, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 12 }}>
+                <Icon size={18} style={{ color: accent }} />
+              </div>
+              <p style={{ fontSize: 14, fontWeight: 600, color: '#2d3142', margin: '0 0 3px' }}>{label}</p>
+              <p style={{ fontSize: 12, color: '#9ba0ae', margin: 0 }}>{desc}</p>
+            </Link>
+          ))}
         </div>
 
-        {/* LOADER */}
+        {/* ── appointments ─────────────────────────────────────── */}
         {loading ? (
-          <div className="flex justify-center py-24">
-            <Loader2
-              size={34}
-              className="animate-spin text-[#8A63D2]"
-            />
+          <div style={{ textAlign: 'center', padding: '60px 0' }}>
+            <Loader2 size={30} style={{ color: '#9b8ec4', animation: 'spin 1s linear infinite', display: 'inline-block' }} />
           </div>
         ) : (
           <>
-            {/* UPCOMING */}
-            <section className="mb-14">
-              <div className="flex items-center justify-between mb-6">
-                <div>
-                  <p className="uppercase tracking-[0.3em] text-xs text-[#9A8F80] mb-2">
-                    Appointments
-                  </p>
-
-                  <h2 className="text-3xl font-bold text-[#2D2A26]">
-                    Upcoming
-                    Sessions
-                  </h2>
-                </div>
+            {/* upcoming */}
+            <section style={{ marginBottom: 40 }}>
+              <div style={{ marginBottom: 16 }}>
+                <p style={{ fontSize: 10, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#9ba0ae', fontWeight: 600, marginBottom: 4 }}>Appointments</p>
+                <h2 style={{ fontFamily: "'Lora', serif", fontSize: 22, fontWeight: 500, color: '#2d3142', margin: 0 }}>Upcoming sessions</h2>
               </div>
 
-              {upcoming.length ===
-              0 ? (
-                <div className="rounded-[32px] bg-white border border-[#ECE6DC] p-14 text-center">
-                  <div className="w-20 h-20 rounded-full bg-[#F5EFE7] flex items-center justify-center mx-auto mb-6">
-                    <Calendar
-                      size={32}
-                      className="text-[#8D7A68]"
-                    />
-                  </div>
-
-                  <h3 className="text-2xl font-semibold text-[#2D2A26] mb-3">
-                    No Upcoming
-                    Sessions
-                  </h3>
-
-                  <p className="text-[#6E665D] max-w-md mx-auto leading-8 mb-8">
-                    Start your
-                    wellness journey
-                    by booking a
-                    therapy session
-                    today.
-                  </p>
-
-                  <Link
-                    href="/book"
-                    className="inline-flex items-center gap-2 px-7 py-4 rounded-full bg-[#8D7A68] hover:bg-[#7A6858] text-white font-medium transition-all duration-300"
-                  >
-                    Book Now
-
-                    <ArrowRight
-                      size={18}
-                    />
+              {upcoming.length === 0 ? (
+                <div style={{ borderRadius: 20, background: '#fff', border: '1px solid rgba(0,0,0,0.06)', padding: '48px 24px', textAlign: 'center' }}>
+                  <Calendar size={30} style={{ color: '#c4bfb8', display: 'block', margin: '0 auto 12px' }} />
+                  <p style={{ fontSize: 15, fontWeight: 500, color: '#2d3142', marginBottom: 4 }}>No upcoming sessions</p>
+                  <p style={{ fontSize: 13, color: '#9ba0ae', marginBottom: 20 }}>Start your wellness journey today.</p>
+                  <Link href="/book" style={{
+                    display: 'inline-flex', alignItems: 'center', gap: 6,
+                    padding: '9px 20px', borderRadius: 10,
+                    background: 'linear-gradient(135deg,#9b8ec4,#7b96b2)',
+                    color: '#fff', textDecoration: 'none', fontSize: 13, fontWeight: 600,
+                  }}>
+                    Book now <ArrowRight size={13} />
                   </Link>
                 </div>
               ) : (
-                <div className="space-y-5">
-                  {upcoming.map(
-                    (a) => (
-                      <div
-                        key={
-                          a._id
-                        }
-                        className="rounded-[30px] bg-white border border-[#ECE6DC] p-6 md:p-8 hover:shadow-[0_18px_50px_rgba(0,0,0,0.05)] transition-all duration-300"
-                      >
-                        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-                          <div className="flex-1">
-                            <div className="flex flex-wrap items-center gap-3 mb-4">
-                              <span
-                                className={cn(
-                                  'px-3 py-1 rounded-full border text-xs font-semibold capitalize',
-                                  statusStyle[
-                                    a
-                                      .status
-                                  ]
-                                )}
-                              >
-                                {
-                                  a.status
-                                }
-                              </span>
-
-                              <span className="text-xs font-mono text-[#9A8F80]">
-                                {
-                                  a.bookingCode
-                                }
-                              </span>
-                            </div>
-
-                            <h3 className="text-2xl font-semibold text-[#2D2A26] mb-5">
-                              {(a.service as any)
-                                ?.name ||
-                                'Therapy Session'}
-                            </h3>
-
-                            <div className="flex flex-wrap gap-5 text-sm text-[#6E665D]">
-                              <div className="flex items-center gap-2">
-                                <Calendar
-                                  size={
-                                    16
-                                  }
-                                  className="text-[#8A63D2]"
-                                />
-
-                                {formatDate(
-                                  a.startAt
-                                )}
-                              </div>
-
-                              <div className="flex items-center gap-2">
-                                <Clock3
-                                  size={
-                                    16
-                                  }
-                                  className="text-[#8A63D2]"
-                                />
-
-                                {formatTime(
-                                  a.startAt
-                                )}
-                              </div>
-
-                              <div className="flex items-center gap-2 capitalize">
-                                {a.mode ===
-                                'online' ? (
-                                  <Video
-                                    size={
-                                      16
-                                    }
-                                    className="text-[#4D9B72]"
-                                  />
-                                ) : (
-                                  <MapPin
-                                    size={
-                                      16
-                                    }
-                                    className="text-[#4D9B72]"
-                                  />
-                                )}
-
-                                {a.mode?.replace(
-                                  '_',
-                                  ' '
-                                )}
-                              </div>
-                            </div>
-                          </div>
-
-                          {a.status !==
-                            'cancelled' && (
-                            <button
-                              onClick={() =>
-                                cancel(
-                                  a._id
-                                )
-                              }
-                              className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-2xl border border-red-100 bg-red-50 hover:bg-red-100 text-red-600 transition-all duration-300"
-                            >
-                              <XCircle
-                                size={
-                                  18
-                                }
-                              />
-
-                              Cancel
-                            </button>
-                          )}
-                        </div>
-                      </div>
-                    )
-                  )}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                  {upcoming.map(a => (
+                    <AppointmentRow key={a._id} a={a} showAlert={formsMissing(a)} />
+                  ))}
                 </div>
               )}
             </section>
 
-            {/* PAST */}
+            {/* past */}
             {past.length > 0 && (
               <section>
-                <div className="mb-6">
-                  <p className="uppercase tracking-[0.3em] text-xs text-[#9A8F80] mb-2">
-                    History
-                  </p>
-
-                  <h2 className="text-3xl font-bold text-[#2D2A26]">
-                    Past Sessions
-                  </h2>
+                <div style={{ marginBottom: 16 }}>
+                  <p style={{ fontSize: 10, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#9ba0ae', fontWeight: 600, marginBottom: 4 }}>History</p>
+                  <h2 style={{ fontFamily: "'Lora', serif", fontSize: 22, fontWeight: 500, color: '#2d3142', margin: 0 }}>Past sessions</h2>
                 </div>
-
-                <div className="space-y-4">
-                  {past.map((a) => (
-                    <div
-                      key={a._id}
-                      className="rounded-[26px] bg-white border border-[#ECE6DC] p-5 opacity-80 hover:opacity-100 transition-all duration-300"
-                    >
-                      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                        <div>
-                          <div className="flex items-center gap-3 mb-2">
-                            <span
-                              className={cn(
-                                'px-3 py-1 rounded-full border text-xs font-semibold capitalize',
-                                statusStyle[
-                                  a
-                                    .status
-                                ]
-                              )}
-                            >
-                              {
-                                a.status
-                              }
-                            </span>
-                          </div>
-
-                          <h3 className="font-semibold text-[#2D2A26]">
-                            {(a.service as any)
-                              ?.name ||
-                              'Session'}
-                          </h3>
-                        </div>
-
-                        <p className="text-sm text-[#8D8478]">
-                          {formatDate(
-                            a.startAt
-                          )}{' '}
-                          •{' '}
-                          {formatTime(
-                            a.startAt
-                          )}
-                        </p>
-                      </div>
-                    </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                  {past.map(a => (
+                    <AppointmentRow key={a._id} a={a} showAlert={false} muted />
                   ))}
                 </div>
               </section>
@@ -588,5 +252,62 @@ export default function DashboardPage() {
         )}
       </div>
     </div>
+  );
+}
+
+/* ─── appointment row ───────────────────────────────────────────── */
+
+function AppointmentRow({ a, showAlert, muted }: { a: any; showAlert: boolean; muted?: boolean }) {
+  return (
+    <Link href={`/dashboard/appointments/${a._id}`} className="appt-row" style={{
+      display: 'block', textDecoration: 'none',
+      borderRadius: 18, background: '#fff',
+      border: `1px solid ${showAlert ? '#FCD34D' : 'rgba(0,0,0,0.06)'}`,
+      padding: '18px 22px',
+      opacity: muted ? 0.75 : 1,
+    }}>
+      <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: 12 }}>
+        <div style={{ flex: 1, minWidth: 200 }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+            <StatusPill status={a.status} />
+            {showAlert && (
+              <span style={{
+                display: 'inline-flex', alignItems: 'center', gap: 4,
+                padding: '3px 8px', borderRadius: 99,
+                background: '#FFFBEB', border: '1px solid #FCD34D',
+                fontSize: 10, color: '#92400E', fontWeight: 600,
+              }}>
+                <AlertTriangle size={9} /> Forms missing
+              </span>
+            )}
+            <span style={{ fontSize: 11, color: '#b0b8c4', fontFamily: 'monospace' }}>{a.bookingCode}</span>
+          </div>
+          <p style={{ fontSize: 15, fontWeight: 600, color: '#2d3142', margin: '0 0 6px' }}>
+            {a.service?.name || 'Therapy Session'}
+          </p>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 14, fontSize: 12, color: '#9ba0ae' }}>
+            <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+              <Calendar size={12} style={{ color: '#9b8ec4' }} /> {formatDate(a.startAt)}
+            </span>
+            <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+              <Clock3 size={12} style={{ color: '#9b8ec4' }} /> {formatTime(a.startAt)}
+            </span>
+            <span style={{ display: 'flex', alignItems: 'center', gap: 4, textTransform: 'capitalize' }}>
+              {a.mode === 'online'
+                ? <Video size={12} style={{ color: '#7a9e7e' }} />
+                : <MapPin size={12} style={{ color: '#7a9e7e' }} />}
+              {a.mode?.replace('_', ' ')}
+            </span>
+            {a.payment?.amount && (
+              <span style={{ fontWeight: 600, color: '#6b5ea8' }}>
+                ₹{a.payment.amount.toLocaleString('en-IN')}
+              </span>
+            )}
+          </div>
+        </div>
+
+        <ChevronRight size={16} style={{ color: '#c4bfb8', flexShrink: 0 }} />
+      </div>
+    </Link>
   );
 }

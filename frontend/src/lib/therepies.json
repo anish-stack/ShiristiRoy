@@ -1,0 +1,662 @@
+[
+  {
+    "slug": "cognitive-behavioural",
+    "title": "Cognitive Behavioural Therapy (CBT)",
+    "tag": "CBT",
+    "image": "https://images.unsplash.com/photo-1516302752625-fcc3c50ae61f?w=800&q=80",
+    "bannerImage": "https://images.unsplash.com/photo-1507413245164-6160d8298b31?w=1400&q=80",
+    "metaTitle": "Cognitive Behavioural Therapy (CBT) | Rewire Thoughts, Transform Life",
+    "metaDescription": "CBT helps you identify and break unhelpful thought cycles to build lasting emotional resilience and mental clarity.",
+    "shortDescription": "A practical, evidence-backed therapy that helps you recognise and reshape the thought patterns driving your emotions and behaviours.",
+    "definition": "Cognitive Behavioural Therapy (CBT) is a structured psychotherapy that examines the link between thoughts, feelings, and actions. By identifying distorted thinking, clients gain the tools to respond to life's challenges with clarity and confidence.",
+    "heroText": "What you think shapes what you feel — and what you feel shapes what you do. CBT breaks that cycle, giving you real tools to build a healthier, more grounded way of living.",
+    "longDescription": [
+      "CBT is grounded in a simple but powerful idea: our thoughts are not facts. When we experience distress, it is often driven by automatic, unhelpful interpretations of events rather than the events themselves. CBT teaches clients to catch these patterns, question them, and replace them with more accurate, balanced perspectives.",
+      "Anxiety, depression, burnout, and self-doubt all share a common thread — distorted thinking that goes unchallenged. CBT brings these patterns into conscious awareness and provides a structured framework for evaluating and changing them. The result is not just symptom relief but a lasting shift in how you relate to your own mind.",
+      "Sessions are goal-focused and collaborative. You and your therapist work as a team — defining what you want to change, identifying the barriers, and building concrete strategies you can use in real life. Progress is measurable, and skills are transferable well beyond the therapy room.",
+      "CBT is effective across a wide range of concerns, including anxiety disorders, low mood, perfectionism, relationship conflict, workplace stress, and life transitions. Every plan is tailored to the individual — no two journeys look the same."
+    ],
+    "howItWorks": {
+      "title": "How CBT Works",
+      "content": "CBT maps the connections between thoughts, emotions, body sensations, and behaviour. Once unhelpful patterns are visible, clients learn to challenge and reframe them. Over time, new thinking habits form — reducing distress, building confidence, and improving everyday functioning."
+    },
+    "whoCanBenefit": [
+      "People caught in cycles of worry or anxious thinking",
+      "Individuals experiencing persistent low mood or depression",
+      "Professionals struggling with stress and emotional exhaustion",
+      "Those with self-critical or perfectionist tendencies",
+      "People going through major life changes or losses",
+      "Anyone wanting practical tools for emotional regulation",
+      "Individuals navigating difficult relationship dynamics",
+      "People who feel stuck and want measurable progress"
+    ],
+    "commonConcerns": [
+      "Anxiety", "Depression", "Stress", "Perfectionism",
+      "Low self-esteem", "Burnout", "Relationship conflict",
+      "Emotional overwhelm", "Negative thinking", "Life transitions"
+    ],
+    "techniques": [
+      {
+        "title": "Cognitive Restructuring",
+        "description": "Learning to identify distorted thought patterns — such as catastrophising or black-and-white thinking — and replace them with more grounded, realistic perspectives."
+      },
+      {
+        "title": "Thought Records",
+        "description": "A structured journal-based tool for tracking automatic thoughts, examining the evidence for and against them, and developing balanced alternatives."
+      },
+      {
+        "title": "Behavioural Activation",
+        "description": "Reconnecting with meaningful, mood-boosting activities to break the cycle of avoidance and low motivation that maintains depression."
+      },
+      {
+        "title": "Exposure Hierarchies",
+        "description": "Gradually and safely confronting feared situations to reduce avoidance and demonstrate that anxiety does not require escape."
+      },
+      {
+        "title": "Problem-Solving Framework",
+        "description": "A step-by-step approach to tackling real-life challenges with clarity, breaking problems into manageable components and generating effective solutions."
+      }
+    ],
+    "therapyGoals": [
+      "Identify and challenge unhelpful thinking",
+      "Build emotional self-awareness",
+      "Develop resilience under pressure",
+      "Reduce anxiety and depressive symptoms",
+      "Strengthen coping strategies",
+      "Improve confidence and self-worth",
+      "Enhance relationship quality",
+      "Create lasting change beyond therapy"
+    ],
+    "benefits": [
+      {
+        "title": "Grounded in Evidence",
+        "description": "One of the most researched therapies in the world, with strong outcomes across anxiety, depression, and stress-related conditions."
+      },
+      {
+        "title": "Skills You Keep",
+        "description": "CBT equips you with tools that continue working long after sessions end — it teaches you to be your own therapist."
+      },
+      {
+        "title": "Structured and Goal-Focused",
+        "description": "Sessions have direction and purpose. Progress is tracked and plans adapt to what you need most."
+      },
+      {
+        "title": "Actively Collaborative",
+        "description": "You are a full participant in setting goals and shaping the work — not a passive recipient of advice."
+      }
+    ],
+    "faq": [
+      {
+        "question": "How many sessions will I need?",
+        "answer": "This depends on your goals and the nature of your concerns. Many people notice meaningful shifts within 8–16 sessions, though some prefer longer-term support."
+      },
+      {
+        "question": "Do I need to complete homework between sessions?",
+        "answer": "Practising between sessions deepens the work significantly. Your therapist will suggest exercises that fit your life — never overwhelming, always purposeful."
+      },
+      {
+        "question": "Is CBT right for me if I have tried therapy before?",
+        "answer": "Yes. CBT's structured, active approach works well for people who have found other therapies less tangible or who want clear, practical strategies alongside emotional support."
+      }
+    ],
+    "quote": {
+      "text": "You cannot stop the waves, but you can learn to surf.",
+      "author": "Jon Kabat-Zinn"
+    },
+    "cta": {
+      "title": "Ready to Think Differently?",
+      "description": "CBT offers practical, compassionate support to help you challenge unhelpful patterns and build a more resilient, fulfilling life.",
+      "buttonText": "Book a Consultation"
+    }
+  },
+  {
+    "slug": "adlerian-therapy",
+    "title": "Adlerian Therapy",
+    "tag": "Adlerian",
+    "image": "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=800&q=80",
+    "bannerImage": "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=1400&q=80",
+    "metaTitle": "Adlerian Therapy | Find Purpose, Belonging & Personal Meaning",
+    "metaDescription": "Adlerian Therapy explores your life story, social connections, and core beliefs to help you live with greater purpose and confidence.",
+    "shortDescription": "A humanistic therapy rooted in the belief that belonging, purpose, and community are essential to human well-being and personal growth.",
+    "definition": "Adlerian Therapy, developed by Alfred Adler, is a holistic, socially-oriented approach that explores how early experiences, family dynamics, and core beliefs shape personality and behaviour. It focuses on building a sense of purpose, social connection, and the courage to change.",
+    "heroText": "Every person is striving for significance and belonging. Adlerian Therapy helps you understand where that striving comes from — and channel it toward a life that truly feels like your own.",
+    "longDescription": [
+      "Alfred Adler believed that human beings are fundamentally social creatures driven by a desire for connection and a sense of significance. Unlike approaches that focus primarily on inner conflict, Adlerian Therapy places the individual within the context of their relationships and community — examining how belonging and purpose shape everything from mood to decision-making.",
+      "Central to Adlerian work is the concept of the 'lifestyle' — the unconscious blueprint formed in childhood that guides how we seek significance and relate to others. Many persistent struggles — perfectionism, people-pleasing, avoidance, relationship conflict — can be understood through this lens. Therapy gently brings these patterns into awareness and opens the door to revision.",
+      "A distinctive feature of Adlerian Therapy is its emphasis on social interest — the capacity to contribute to and connect with others. When this is diminished, individuals often experience isolation, low motivation, and a sense of meaninglessness. Therapy works to restore this connection, often producing a profound shift in how clients relate to themselves and the world.",
+      "Sessions explore early recollections, family constellation, and current life challenges to build a coherent picture of your unique way of moving through the world. From this foundation, practical strategies are developed to help you act with greater courage, purpose, and authenticity."
+    ],
+    "howItWorks": {
+      "title": "How Adlerian Therapy Works",
+      "content": "The therapist and client explore early memories, family influences, and recurring life patterns to uncover the unconscious beliefs driving behaviour. Through insight, encouragement, and action-oriented strategies, clients develop greater self-understanding and the courage to live in alignment with their values."
+    },
+    "whoCanBenefit": [
+      "Individuals feeling lost or lacking direction in life",
+      "People struggling with low self-worth or inferiority",
+      "Those experiencing loneliness or difficulty connecting with others",
+      "People seeking deeper meaning and purpose",
+      "Individuals with recurring patterns in relationships",
+      "Those affected by difficult family dynamics or early experiences",
+      "People navigating identity questions or major life decisions",
+      "Anyone wanting to understand themselves more deeply"
+    ],
+    "commonConcerns": [
+      "Low self-worth", "Lack of purpose", "Loneliness", "Identity confusion",
+      "Relationship patterns", "Inferiority feelings", "Family conflict",
+      "Life direction", "Social anxiety", "Personal stagnation"
+    ],
+    "techniques": [
+      {
+        "title": "Lifestyle Analysis",
+        "description": "Exploring early memories and childhood experiences to identify the core beliefs and goals that shape present behaviour and relationships."
+      },
+      {
+        "title": "Early Recollections",
+        "description": "Using earliest memories as a window into deeply held beliefs about self, others, and the world — revealing patterns that may be operating unconsciously."
+      },
+      {
+        "title": "Encouragement",
+        "description": "Deliberately building the client's sense of capability and courage — a cornerstone of Adlerian practice — to support meaningful change."
+      },
+      {
+        "title": "Social Interest Development",
+        "description": "Cultivating a sense of belonging, empathy, and contribution to community as a foundation for lasting well-being."
+      },
+      {
+        "title": "Goal Clarification",
+        "description": "Identifying what the individual is truly striving for — and examining whether current behaviours are actually moving them toward those goals."
+      }
+    ],
+    "therapyGoals": [
+      "Deepen self-understanding",
+      "Uncover and revise limiting beliefs",
+      "Strengthen social connection",
+      "Build a sense of meaning and purpose",
+      "Develop courage for change",
+      "Improve relationship quality",
+      "Increase personal agency",
+      "Live with greater authenticity"
+    ],
+    "benefits": [
+      {
+        "title": "Holistic and Humanistic",
+        "description": "Treats the whole person — not just symptoms — situating individual experience within the context of relationships and community."
+      },
+      {
+        "title": "Empowering",
+        "description": "Encouragement is woven into every session, helping clients build confidence and the belief that change is genuinely possible."
+      },
+      {
+        "title": "Insight and Action Combined",
+        "description": "Combines deep self-exploration with practical, forward-focused strategies for living differently."
+      },
+      {
+        "title": "Relationally Rich",
+        "description": "Particularly valuable for those whose struggles are rooted in relationship patterns, belonging, or early family experiences."
+      }
+    ],
+    "faq": [
+      {
+        "question": "Is Adlerian Therapy focused on the past?",
+        "answer": "It draws on the past — particularly early experiences — to understand present patterns, but the focus is always on meaningful change now and in the future."
+      },
+      {
+        "question": "How is Adlerian Therapy different from psychoanalysis?",
+        "answer": "While both explore early experience, Adlerian Therapy is more optimistic, social, and action-oriented. It emphasises conscious choice, community, and the capacity for growth."
+      },
+      {
+        "question": "Can Adlerian Therapy help with loneliness?",
+        "answer": "Yes. Restoring a sense of belonging and social connection is central to the Adlerian approach, making it particularly effective for isolation, withdrawal, and relational difficulties."
+      }
+    ],
+    "quote": {
+      "text": "The only normal people are the ones you don't know very well.",
+      "author": "Alfred Adler"
+    },
+    "cta": {
+      "title": "Discover What Drives You",
+      "description": "Adlerian Therapy offers a compassionate space to understand your story, reconnect with your values, and move toward a life of greater purpose and belonging.",
+      "buttonText": "Book a Consultation"
+    }
+  },
+  {
+    "slug": "mindfulness-based",
+    "title": "Mindfulness-Based Therapy",
+    "tag": "MBSR",
+    "image": "https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=800&q=80",
+    "bannerImage": "https://images.unsplash.com/photo-1545389336-cf090694435e?w=1400&q=80",
+    "metaTitle": "Mindfulness-Based Therapy (MBSR) | Presence, Calm & Emotional Clarity",
+    "metaDescription": "Mindfulness-Based Therapy trains present-moment awareness to reduce stress, ease anxiety, and cultivate lasting emotional balance.",
+    "shortDescription": "An evidence-based approach that cultivates present-moment awareness to reduce stress, improve emotional regulation, and build inner calm.",
+    "definition": "Mindfulness-Based Therapy integrates mindfulness practices — including meditation, breathing, and body awareness — with therapeutic principles to help individuals observe their thoughts and feelings without judgment. This creates space between experience and reaction, enabling wiser, more intentional responses to life.",
+    "heroText": "Most suffering lives in the past or future. Mindfulness-Based Therapy anchors you in the present — the only place where real change is possible.",
+    "longDescription": [
+      "Mindfulness-Based Stress Reduction (MBSR) and Mindfulness-Based Cognitive Therapy (MBCT) have transformed modern mental health care by demonstrating that the quality of attention we bring to experience profoundly shapes how we feel. Rather than fighting or suppressing difficult thoughts and emotions, mindfulness teaches us to observe them with curiosity and compassion — reducing their power to cause suffering.",
+      "Stress, anxiety, and low mood are often maintained by automatic patterns of rumination — replaying the past or catastrophising about the future. Mindfulness interrupts this by repeatedly returning attention to the present moment. Over time, this trains the brain toward greater calm, focus, and emotional regulation.",
+      "Sessions incorporate guided mindfulness practices — such as body scans, breath awareness, and mindful movement — alongside psychoeducation about how the mind responds to stress. Clients develop a personal practice that can be sustained and deepened long after formal therapy ends.",
+      "Mindfulness-Based Therapy is particularly effective for chronic stress, anxiety, depression relapse prevention, pain management, burnout, and anyone seeking a deeper relationship with their inner life. It is accessible to people of all backgrounds and requires no prior meditation experience."
+    ],
+    "howItWorks": {
+      "title": "How Mindfulness-Based Therapy Works",
+      "content": "Through regular mindfulness practice, clients train attention and awareness. By observing thoughts and feelings as passing events — rather than facts or commands — they gain freedom from reactive patterns. The result is reduced stress, greater emotional clarity, and an increased capacity for presence and connection."
+    },
+    "whoCanBenefit": [
+      "People experiencing chronic stress or overwhelm",
+      "Individuals with anxiety or persistent worry",
+      "Those recovering from or seeking to prevent depression relapse",
+      "People dealing with physical pain or chronic illness",
+      "Professionals experiencing burnout",
+      "Individuals who feel disconnected from themselves or others",
+      "Anyone seeking greater inner calm and self-awareness",
+      "People new to or curious about meditation and contemplative practice"
+    ],
+    "commonConcerns": [
+      "Chronic stress", "Anxiety", "Depression", "Burnout",
+      "Rumination", "Emotional reactivity", "Chronic pain",
+      "Disconnection", "Sleep difficulties", "Overwhelm"
+    ],
+    "techniques": [
+      {
+        "title": "Body Scan Meditation",
+        "description": "A systematic practice of bringing gentle attention to each part of the body, cultivating presence and releasing tension held unconsciously."
+      },
+      {
+        "title": "Breath Awareness",
+        "description": "Using the breath as an anchor to present-moment experience — a simple, portable tool available in any situation."
+      },
+      {
+        "title": "Mindful Movement",
+        "description": "Gentle yoga and movement practices that build body awareness and connect physical sensation to emotional experience."
+      },
+      {
+        "title": "Loving-Kindness Meditation",
+        "description": "Cultivating compassion toward oneself and others — particularly effective for self-criticism, shame, and relational difficulties."
+      },
+      {
+        "title": "Thought Defusion",
+        "description": "Learning to observe thoughts as mental events rather than truths, reducing their emotional charge and allowing wiser responses."
+      }
+    ],
+    "therapyGoals": [
+      "Develop sustained present-moment awareness",
+      "Reduce stress and anxiety",
+      "Break cycles of rumination",
+      "Improve emotional regulation",
+      "Build self-compassion",
+      "Enhance focus and clarity",
+      "Reconnect with body and senses",
+      "Establish a sustainable personal practice"
+    ],
+    "benefits": [
+      {
+        "title": "Neurologically Supported",
+        "description": "Mindfulness practice has measurable effects on brain structure and function, including areas associated with stress response and emotional regulation."
+      },
+      {
+        "title": "Sustainable Beyond Therapy",
+        "description": "Skills developed in sessions become a lifelong resource — not dependent on ongoing clinical support."
+      },
+      {
+        "title": "Accessible and Inclusive",
+        "description": "No prior experience or particular background required. Practices are adapted to individual needs and abilities."
+      },
+      {
+        "title": "Holistic Impact",
+        "description": "Benefits extend across mental, physical, and relational well-being — not limited to a single presenting concern."
+      }
+    ],
+    "faq": [
+      {
+        "question": "Do I need to already meditate to benefit from this therapy?",
+        "answer": "Not at all. Sessions introduce mindfulness from the ground up. All that is needed is willingness to practise and an open, curious attitude."
+      },
+      {
+        "question": "How is this different from regular meditation classes?",
+        "answer": "Mindfulness-Based Therapy integrates mindfulness with clinical understanding of your specific concerns. It is personalised, therapeutically guided, and focused on measurable psychological outcomes."
+      },
+      {
+        "question": "Can mindfulness help with physical symptoms?",
+        "answer": "Yes. MBSR was originally developed to support people with chronic pain and illness, and has strong evidence for reducing physical stress symptoms and improving quality of life."
+      }
+    ],
+    "quote": {
+      "text": "Wherever you go, there you are.",
+      "author": "Jon Kabat-Zinn"
+    },
+    "cta": {
+      "title": "Find Stillness in the Everyday",
+      "description": "Mindfulness-Based Therapy offers a compassionate path to reducing stress, calming the mind, and reconnecting with what matters most.",
+      "buttonText": "Book a Consultation"
+    }
+  },
+  {
+    "slug": "group-therapy",
+    "title": "Group Therapy",
+    "tag": "Group",
+    "image": "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=800&q=80",
+    "bannerImage": "https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?w=1400&q=80",
+    "metaTitle": "Group Therapy | Heal Through Connection, Shared Experience & Community",
+    "metaDescription": "Group Therapy creates a safe, supportive environment where shared experience becomes a powerful catalyst for insight, growth, and healing.",
+    "shortDescription": "A therapeutic space where shared human experience becomes the medium for growth — offering connection, reflection, and collective healing.",
+    "definition": "Group Therapy brings together a small number of individuals with a trained therapist to explore personal challenges within a supportive community setting. The group itself becomes a therapeutic tool — offering diverse perspectives, mutual support, and the profound realisation that you are not alone.",
+    "heroText": "Healing rarely happens in isolation. Group Therapy harnesses the power of human connection — turning shared experience into insight, and community into a catalyst for lasting change.",
+    "longDescription": [
+      "Group Therapy is one of the most powerful and yet underutilised modalities in mental health care. The format creates something that individual therapy cannot replicate: a live social environment where relationship patterns emerge in real time, and where the experience of being truly seen and understood by peers can be deeply transformative.",
+      "At the heart of group work is the recognition that many of our deepest struggles — shame, loneliness, self-doubt, fear of rejection — are relational in origin and therefore relational in their healing. When a person hears others articulate the exact fears they have never spoken aloud, the isolation that surrounds those fears begins to dissolve.",
+      "Groups are facilitated carefully and ethically, with clear boundaries around confidentiality and respect. The therapist guides the process, but the members become resources for one another — offering perspective, challenge, support, and the gift of genuine witness. This dynamic is not incidental; it is therapeutic.",
+      "Group Therapy can address a wide range of concerns, from anxiety and depression to grief, life transitions, relationship difficulties, and identity exploration. Some groups are theme-focused; others are open-process. Both offer profound opportunities for growth that extend well beyond the sessions themselves."
+    ],
+    "howItWorks": {
+      "title": "How Group Therapy Works",
+      "content": "A small group of individuals — typically 6 to 10 — meets regularly with a trained therapist. Members share experiences, offer and receive feedback, and observe their own patterns as they arise in the group dynamic. The therapist guides exploration and ensures a safe, contained environment. Over time, the group becomes a powerful laboratory for personal growth and relational change."
+    },
+    "whoCanBenefit": [
+      "Individuals feeling isolated or misunderstood",
+      "People who struggle in relationships or social settings",
+      "Those dealing with grief, loss, or major life transitions",
+      "Individuals working through anxiety or depression",
+      "People seeking community alongside therapeutic support",
+      "Those who benefit from hearing others' perspectives",
+      "Individuals wanting to explore their relational patterns in a live setting",
+      "People who have already done individual work and want to go deeper"
+    ],
+    "commonConcerns": [
+      "Loneliness", "Anxiety", "Depression", "Grief",
+      "Relationship patterns", "Shame", "Life transitions",
+      "Identity", "Low self-worth", "Social difficulties"
+    ],
+    "techniques": [
+      {
+        "title": "Process Reflection",
+        "description": "Exploring what is happening within the group in real time — noticing patterns, reactions, and relational dynamics as they emerge."
+      },
+      {
+        "title": "Interpersonal Feedback",
+        "description": "Members offer honest, compassionate observations to one another, providing perspectives unavailable in individual therapy."
+      },
+      {
+        "title": "Psychoeducation",
+        "description": "The therapist introduces relevant frameworks and concepts to help the group make sense of their shared and individual experiences."
+      },
+      {
+        "title": "Universalisation",
+        "description": "Recognising that one's own struggles are shared by others — a profoundly normalising and relieving experience."
+      },
+      {
+        "title": "Role Exploration",
+        "description": "Noticing the roles we tend to adopt in group settings and examining how these mirror patterns in wider relationships."
+      }
+    ],
+    "therapyGoals": [
+      "Reduce isolation and build connection",
+      "Gain insight through others' perspectives",
+      "Develop interpersonal skills",
+      "Explore relational patterns in a safe setting",
+      "Build empathy and compassion",
+      "Process shared or individual challenges",
+      "Strengthen sense of identity and belonging",
+      "Develop courage for authentic self-expression"
+    ],
+    "benefits": [
+      {
+        "title": "The Healing Power of Community",
+        "description": "Being truly understood by peers — not just a therapist — offers a unique and often irreplaceable therapeutic experience."
+      },
+      {
+        "title": "Diverse Perspectives",
+        "description": "The variety of experiences and viewpoints within a group enriches reflection and broadens self-understanding in ways individual therapy cannot."
+      },
+      {
+        "title": "Real-Time Relational Learning",
+        "description": "Group dynamics provide a live laboratory for noticing and changing relationship patterns as they actually occur."
+      },
+      {
+        "title": "Cost-Effective",
+        "description": "Group Therapy offers high-quality therapeutic support at a more accessible cost, making professional help available to more people."
+      }
+    ],
+    "faq": [
+      {
+        "question": "Will I have to share things I am not comfortable with?",
+        "answer": "Participation is always at your own pace. You are never required to disclose more than you choose. The group develops its own safety over time, and members typically find sharing becomes more natural as trust builds."
+      },
+      {
+        "question": "Is group therapy as effective as individual therapy?",
+        "answer": "Research consistently shows group therapy to be equally effective for many conditions — and uniquely powerful for concerns rooted in relationships, belonging, and social experience."
+      },
+      {
+        "question": "How large are the groups?",
+        "answer": "Most therapeutic groups consist of 6 to 10 members. This size allows for meaningful connection while ensuring each person receives adequate attention."
+      }
+    ],
+    "quote": {
+      "text": "The wound is the place where the light enters you.",
+      "author": "Rumi"
+    },
+    "cta": {
+      "title": "You Are Not Alone in This",
+      "description": "Group Therapy offers the rare gift of genuine community — a space where shared experience becomes the ground for deep, lasting personal transformation.",
+      "buttonText": "Book a Consultation"
+    }
+  },
+  {
+    "slug": "positive-psychology",
+    "title": "Positive Psychology Therapy",
+    "tag": "PsyPos",
+    "image": "https://images.unsplash.com/photo-1499209974431-9dddcece7f88?w=800&q=80",
+    "bannerImage": "https://images.unsplash.com/photo-1476611338391-6f395a0ebc7b?w=1400&q=80",
+    "metaTitle": "Positive Psychology Therapy | Build Strengths, Resilience & a Life Worth Living",
+    "metaDescription": "Positive Psychology Therapy goes beyond symptom relief — helping you identify strengths, cultivate meaning, and build a genuinely flourishing life.",
+    "shortDescription": "A strengths-based, forward-focused approach that helps individuals identify what is right with them and build the conditions for a flourishing life.",
+    "definition": "Positive Psychology Therapy draws on the science of well-being to help individuals recognise their core strengths, cultivate positive emotions, build meaningful relationships, and create a life aligned with their deepest values. It shifts the focus from what is broken to what is possible.",
+    "heroText": "Therapy is not only about reducing what hurts. Positive Psychology helps you actively build what thrives — turning your strengths into a foundation for genuine, lasting happiness.",
+    "longDescription": [
+      "Traditional mental health approaches have long focused on diagnosing and treating illness. Positive Psychology — pioneered by Martin Seligman and colleagues — asked a different question: what makes life worth living? This shift in perspective produced a body of science with profound therapeutic applications, now integrated into a clinical approach that addresses both distress and flourishing.",
+      "At the heart of Positive Psychology Therapy is the PERMA model — Positive Emotions, Engagement, Relationships, Meaning, and Accomplishment. These are the building blocks of well-being. Rather than simply eliminating symptoms, therapy actively cultivates each of these elements, creating conditions for sustainable happiness and resilience.",
+      "Central to the approach is the identification and application of character strengths — the natural qualities (such as curiosity, kindness, perseverance, or creativity) that energise and define us at our best. When we use our strengths intentionally and often, research consistently shows improvements in mood, motivation, relationships, and sense of purpose.",
+      "Positive Psychology Therapy is not naively optimistic. It acknowledges difficulty honestly and provides tools for working through it. But it holds the conviction that every person possesses resources worth building upon — and that the goal of a good life is worth striving for, not just the absence of a difficult one."
+    ],
+    "howItWorks": {
+      "title": "How Positive Psychology Therapy Works",
+      "content": "Therapist and client explore the individual's signature strengths, values, and sources of meaning. Evidence-based practices — including gratitude work, strength-spotting, savouring, and acts of contribution — are integrated into daily life. Over time, clients build a richer emotional repertoire, stronger relationships, and a clearer sense of what makes their life meaningful and worth living."
+    },
+    "whoCanBenefit": [
+      "People who feel their life lacks meaning or direction",
+      "Individuals recovering from anxiety or depression seeking more than symptom relief",
+      "Those wanting to move from functioning to genuinely flourishing",
+      "People seeking greater engagement, joy, and vitality",
+      "Individuals wanting to build on their strengths rather than fix their deficits",
+      "Those navigating mid-life questioning or identity transitions",
+      "People who feel disconnected from purpose or passion",
+      "Anyone committed to proactively building a better life"
+    ],
+    "commonConcerns": [
+      "Lack of purpose", "Low motivation", "Emotional flatness", "Identity uncertainty",
+      "Depression recovery", "Life dissatisfaction", "Relationship quality",
+      "Work engagement", "Low resilience", "Meaninglessness"
+    ],
+    "techniques": [
+      {
+        "title": "Strengths Identification",
+        "description": "Using validated tools like the VIA Character Strengths survey to identify core personal strengths and integrate them more deliberately into daily life."
+      },
+      {
+        "title": "Gratitude Practice",
+        "description": "Structured gratitude exercises — such as the Three Good Things practice — that train attention toward positive experience and increase positive affect over time."
+      },
+      {
+        "title": "Savouring",
+        "description": "Learning to fully attend to and appreciate positive experiences, rather than letting them pass unnoticed — a key skill for increasing daily joy."
+      },
+      {
+        "title": "Meaning-Making",
+        "description": "Exploring personal values, purpose, and what constitutes a well-lived life — creating clarity and direction for meaningful action."
+      },
+      {
+        "title": "Acts of Contribution",
+        "description": "Engaging in purposeful giving, service, or connection — activities with among the strongest evidence for sustained increases in well-being."
+      }
+    ],
+    "therapyGoals": [
+      "Identify and leverage core character strengths",
+      "Cultivate positive emotions intentionally",
+      "Build deeper and more rewarding relationships",
+      "Develop a clear and compelling sense of purpose",
+      "Increase resilience and adaptive coping",
+      "Enhance daily engagement and vitality",
+      "Create a personally meaningful vision of flourishing",
+      "Build sustainable habits that support long-term well-being"
+    ],
+    "benefits": [
+      {
+        "title": "Beyond Symptom Relief",
+        "description": "Aims not just to reduce what is wrong but to actively construct what is right — producing richer, more lasting improvements in quality of life."
+      },
+      {
+        "title": "Strengths-Based",
+        "description": "Treats each client as inherently resourceful — building on what is already working rather than cataloguing deficits."
+      },
+      {
+        "title": "Science-Backed Practices",
+        "description": "Every technique is drawn from peer-reviewed research with demonstrated effects on well-being, resilience, and life satisfaction."
+      },
+      {
+        "title": "Proactive and Empowering",
+        "description": "Clients take an active, creative role in designing the life they want — therapy becomes a collaborative project in living well."
+      }
+    ],
+    "faq": [
+      {
+        "question": "Is Positive Psychology just about being happy all the time?",
+        "answer": "Not at all. It fully acknowledges difficulty, loss, and pain. The goal is not constant positivity but a rich, meaningful life that includes the full range of human experience."
+      },
+      {
+        "question": "Can this approach help with depression?",
+        "answer": "Yes. Positive Psychology interventions have strong evidence as both primary treatment and adjuncts to recovery — particularly in building the conditions that protect against relapse."
+      },
+      {
+        "question": "What if I don't know what my strengths are?",
+        "answer": "Discovering your strengths is often one of the most energising parts of the process. Validated assessments and reflective exercises make this accessible and genuinely surprising for most clients."
+      }
+    ],
+    "quote": {
+      "text": "The good life is using your signature strengths every day to produce authentic happiness and abundant gratification.",
+      "author": "Martin Seligman"
+    },
+    "cta": {
+      "title": "Build the Life You Actually Want",
+      "description": "Positive Psychology Therapy goes beyond managing problems — it helps you actively construct a life rich with meaning, strength, and genuine joy.",
+      "buttonText": "Book a Consultation"
+    }
+  },
+  {
+    "slug": "integrative-approach",
+    "title": "Integrative Therapy",
+    "tag": "Integrative",
+    "image": "https://images.unsplash.com/photo-1545205597-3d9d02c29597?w=800&q=80",
+    "bannerImage": "https://images.unsplash.com/photo-1497366216548-37526070297c?w=1400&q=80",
+    "metaTitle": "Integrative Therapy | Personalised, Whole-Person Therapeutic Support",
+    "metaDescription": "Integrative Therapy blends evidence-based approaches to create a personalised therapeutic experience that meets your unique needs and goals.",
+    "shortDescription": "A flexible, personalised approach that draws on multiple therapeutic traditions to address the whole person — mind, body, emotion, and relationship.",
+    "definition": "Integrative Therapy combines techniques and principles from different therapeutic modalities — such as CBT, psychodynamic, humanistic, and mindfulness-based approaches — tailored to the unique needs of each individual. Rather than fitting the person to a single model, Integrative Therapy fits the model to the person.",
+    "heroText": "No two people are the same. Integrative Therapy honours that truth — drawing on the best of multiple traditions to create a deeply personalised path to healing and growth.",
+    "longDescription": [
+      "The field of psychotherapy has produced dozens of well-researched approaches, each with particular strengths and particular limitations. Integrative Therapy is grounded in the recognition that no single model is sufficient for every person or every problem. Instead, it draws flexibly and thoughtfully from multiple traditions, guided at every step by what the individual actually needs.",
+      "A skilled integrative therapist might draw on CBT techniques to address unhelpful thinking patterns, psychodynamic insight to explore how early relationships shape present behaviour, humanistic principles to honour the client's autonomy and capacity for growth, and mindfulness practices to cultivate present-moment awareness. These are not combined arbitrarily — they are woven together in a coherent, theoretically informed way.",
+      "At the heart of the integrative approach is the therapeutic relationship itself. Research consistently shows that the quality of the relationship between therapist and client is one of the strongest predictors of positive outcomes, regardless of modality. Integrative therapists prioritise building a relationship of genuine trust, warmth, and collaboration as the foundation for all other work.",
+      "Integrative Therapy is particularly well-suited to individuals with complex or layered concerns, those who have tried specific approaches without full success, and anyone who senses that their needs do not fit neatly into a single framework. It is also ideal for clients whose goals shift over time — the approach adapts as they do."
+    ],
+    "howItWorks": {
+      "title": "How Integrative Therapy Works",
+      "content": "The therapist begins with a thorough exploration of the individual's history, concerns, and goals. From this, a personalised therapeutic plan is developed that draws on the most appropriate techniques and frameworks. The approach is reviewed and refined regularly in collaboration with the client, ensuring the work remains responsive, relevant, and genuinely useful at every stage."
+    },
+    "whoCanBenefit": [
+      "Individuals with complex or overlapping concerns",
+      "People who have tried specific approaches without full resolution",
+      "Those whose needs have evolved or changed over time",
+      "Individuals seeking a deeply personalised therapeutic experience",
+      "People wanting both insight and practical strategies",
+      "Those drawn to a relational, collaborative approach",
+      "Individuals at major crossroads in life",
+      "Anyone who feels they don't fit a single therapeutic framework"
+    ],
+    "commonConcerns": [
+      "Complex anxiety", "Depression", "Trauma", "Relationship difficulties",
+      "Identity questions", "Life transitions", "Grief", "Chronic stress",
+      "Low self-worth", "Existential concerns"
+    ],
+    "techniques": [
+      {
+        "title": "Psychodynamic Exploration",
+        "description": "Exploring how past relationships and unconscious patterns influence present thoughts, feelings, and behaviour."
+      },
+      {
+        "title": "Cognitive and Behavioural Strategies",
+        "description": "Drawing on CBT tools to identify and change unhelpful thinking patterns and behavioural responses."
+      },
+      {
+        "title": "Humanistic and Person-Centred Work",
+        "description": "Honoring the client's autonomy, values, and inherent capacity for growth within a warm, non-judgmental relationship."
+      },
+      {
+        "title": "Somatic Awareness",
+        "description": "Attending to physical sensations and bodily experience as a route to emotional understanding and regulation."
+      },
+      {
+        "title": "Mindfulness Integration",
+        "description": "Incorporating present-moment awareness practices to support emotional regulation and deepen self-understanding."
+      }
+    ],
+    "therapyGoals": [
+      "Understand self at multiple levels — cognitive, emotional, relational",
+      "Break unhelpful patterns from past experience",
+      "Build emotional resilience and flexibility",
+      "Develop authentic, fulfilling relationships",
+      "Navigate complex life challenges with greater clarity",
+      "Integrate insights into everyday living",
+      "Create meaningful, lasting personal change",
+      "Move toward a life aligned with core values"
+    ],
+    "benefits": [
+      {
+        "title": "Truly Personalised",
+        "description": "No rigid protocol — the therapy adapts to you, your history, your goals, and your pace."
+      },
+      {
+        "title": "Responsive and Evolving",
+        "description": "The approach flexes as your needs change, making it suitable for short-term focused work and long-term growth alike."
+      },
+      {
+        "title": "Relationally Grounded",
+        "description": "The therapeutic relationship is central — a secure, trusting foundation from which all change becomes possible."
+      },
+      {
+        "title": "Draws on the Best Available Evidence",
+        "description": "Combines the strengths of multiple evidence-based modalities, rather than being limited to one."
+      }
+    ],
+    "faq": [
+      {
+        "question": "Is Integrative Therapy less focused than a single modality?",
+        "answer": "No. Integrative Therapy is highly focused — but the focus is on what you specifically need, rather than on fitting you into a predetermined framework. The eclecticism is thoughtful and theoretically informed."
+      },
+      {
+        "question": "How does the therapist decide which approaches to use?",
+        "answer": "Through thorough assessment, ongoing dialogue, and collaborative review. You are always part of the conversation about what is and isn't working."
+      },
+      {
+        "question": "Is this suitable for complex trauma?",
+        "answer": "Yes. Integrative Therapy's flexibility makes it particularly well-suited to trauma, where a single approach often fails to address the full complexity of experience."
+      }
+    ],
+    "quote": {
+      "text": "The meeting of two personalities is like the contact of two chemical substances: if there is any reaction, both are transformed.",
+      "author": "Carl Jung"
+    },
+    "cta": {
+      "title": "Therapy That Fits You — Not the Other Way Around",
+      "description": "Integrative Therapy offers a personalised, whole-person approach to healing — flexible enough to meet you wherever you are, and deep enough to take you where you need to go.",
+      "buttonText": "Book a Consultation"
+    }
+  }
+]

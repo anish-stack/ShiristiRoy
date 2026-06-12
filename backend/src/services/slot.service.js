@@ -64,25 +64,25 @@ export async function listAvailableSlots({ therapistId, from, to, mode, service 
     status: SlotStatus.AVAILABLE,
   };
   if (mode) q.mode = mode;
-  if (service) q.service = service;
+  // if (service) q.service = service;
   // also exclude held but expired? a separate sweeper handles that.
   return Slot.find(q).sort({ startAt: 1 }).lean();
 }
 
 export async function checkSelectedSlot({ slotId, therapistId, service }) {
-  const slot = await Slot.findOne({ _id: slotId, therapist: therapistId, status: SlotStatus.AVAILABLE , service: service || undefined });
+  const slot = await Slot.findOne({ _id: slotId, therapist: therapistId, status: SlotStatus.AVAILABLE , });
   console.log('Checking slot with criteria:', { slotId, therapistId, service });
   console.log('Found slot:', slot);
   if (!slot) throw new ApiError(400, 'Selected slot is no t available');
-  if (
-    service &&
-    slot.service &&
-    slot.service.toString() !== service.toString()
-  ) {
-    throw new ApiError(
-      400,
-      `Selected slot does not support service ${service}`
-    );
-  }
+  // if (
+  //   service &&
+  //   slot.service &&
+  //   slot.service.toString() !== service.toString()
+  // ) {
+  //   throw new ApiError(
+  //     400,
+  //     `Selected slot does not support service ${service}`
+  //   );
+  // }
   return slot;
 }

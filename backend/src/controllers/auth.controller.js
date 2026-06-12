@@ -12,10 +12,29 @@ export const verifyEmail = asyncHandler(async (req, res) => {
 });
 
 export const login = asyncHandler(async (req, res) => {
-  const out = await authSvc.login({ ...req.body, ua: req.headers['user-agent'], ip: req.ip });
-  ok(res, out, 'Logged in');
-});
+  const out = await authSvc.login({
+    ...req.body,
+    ua: req.headers["user-agent"],
+    ip: req.ip,
+  });
 
+  // 🔥 SET COOKIES HERE
+  res.cookie("auth_token", out.accessToken, {
+    httpOnly: true,
+    secure:false,
+    sameSite:false,
+    maxAge: 24 * 60 * 60 * 1000, // 1 day
+  });
+
+  res.cookie("refresh_token", out.refreshToken, {
+    httpOnly: true,
+    secure:false,
+    sameSite:false,
+    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+  });
+
+  return ok(res, { user: out.user }, "Logged in");
+});
 export const refresh = asyncHandler(async (req, res) => {
   const out = await authSvc.refresh(req.body);
   ok(res, out, 'Token refreshed');

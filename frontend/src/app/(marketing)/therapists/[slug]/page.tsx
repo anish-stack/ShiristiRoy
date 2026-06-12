@@ -9,15 +9,15 @@ interface PageProps {
 }
 
 
-const page = async({ params }: PageProps) => {
-  const { slug } = await params;
-      let therapists: any = null;
-      try {
-          therapists = await therapistApi.bySlug(slug);
-      } catch (error) {
-          console.error(error);
-      }
-  return <Theripist therapists={therapists}/>
+const page = async ({ params }: PageProps) => {
+    const { slug } = await params;
+    let therapists: any = null;
+    try {
+        therapists = await therapistApi.bySlug(slug);
+    } catch (error) {
+        console.error(error);
+    }
+    return <Theripist therapists={therapists} />
 }
 
 export default page
