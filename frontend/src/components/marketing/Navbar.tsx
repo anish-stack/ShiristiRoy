@@ -273,10 +273,10 @@ export function Navbar() {
                   }
                   className="flex items-center gap-3 p-3 rounded-2xl bg-[#FAF4EE]"
                 >
-                  <div className="text-xl">
+                  {/* <div className="text-xl">
                     {icons[s.slug] ??
                       ''}
-                  </div>
+                  </div> */}
 
                   <span className="text-sm font-medium text-[#2E2A27]">
                     {s.name}
