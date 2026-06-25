@@ -38,7 +38,7 @@ export const metadata: Metadata = {
   authors: [{ name: 'Srishti Roy' }],
   creator: 'Srishti Roy',
 
-  robots: 'index,follow',
+  robots: 'noindex,nofollow',
 
   openGraph: {
     type: 'website',
