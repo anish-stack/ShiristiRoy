@@ -45,7 +45,7 @@ const nav = [
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
-  const { user, clearAuth } = useAuthStore();
+  const { user, logout } = useAuthStore();
   const router = useRouter();
   const pathname = usePathname();
 
@@ -91,7 +91,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <Link href="/" className="flex items-center gap-2 text-xs text-brand-ink/40 hover:text-brand-ink px-2 py-1.5">
             <ArrowLeft size={13} /> Back to site
           </Link>
-          <button onClick={() => { clearAuth(); router.push('/'); }}
+          <button onClick={async () => { await logout(); router.push('/'); }}
             className="flex items-center gap-2 text-xs text-brand-ink/40 hover:text-red-500 px-2 py-1.5 w-full">
             Logout
           </button>

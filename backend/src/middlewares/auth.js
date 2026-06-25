@@ -3,6 +3,7 @@ import { ApiError } from '../utils/apiError.js';
 
 export const authenticate = (required = true) => (req, res, next) => {
   const hdr = req.headers.authorization || '';
+  console.log('🔑 Authorization header:', req.headers);
   const token = hdr.startsWith('Bearer ') ? hdr.slice(7) : null;
   if (!token) {
     if (!required) return next();

@@ -6,7 +6,7 @@ import { publicApi } from '@/lib/api';
 import { toast } from '@/components/ui/Toaster';
 
 const contacts = [
-  { icon: Mail, label: 'Email', value: 'contact@awakentherapy.in', href: 'mailto:contact@awakentherapy.in' },
+  { icon: Mail, label: 'Email', value: 'contact@awarenesswithroy.com', href: 'mailto:contact@awarenesswithroy.com' },
   { icon: Phone, label: 'Phone (India)', value: '+91 8448 009 694', href: 'tel:+918448009694' },
   { icon: MessageCircle, label: 'WhatsApp', value: '+1 647 500 8349', href: 'https://wa.me/16475008349' },
   { icon: Instagram, label: 'Instagram', value: '@awakenwithsrishti', href: 'https://instagram.com/awakenwithsrishti' },

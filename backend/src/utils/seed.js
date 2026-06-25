@@ -113,7 +113,7 @@ async function run() {
       bg: '#FBF7F0', // warm ivory
       text: '#2E2A33',
     }, group: 'theme' },
-    { key: 'contact.email', value: 'contact@awakentherapy.in', group: 'contact' },
+    { key: 'contact.email', value: 'contact@awarenesswithroy.com', group: 'contact' },
     { key: 'contact.phone', value: '+91 8448009694', group: 'contact' },
     { key: 'contact.whatsapp', value: '+1 647 500 8349', group: 'contact' },
     { key: 'social.instagram', value: 'awakenwithsrishti', group: 'social' },

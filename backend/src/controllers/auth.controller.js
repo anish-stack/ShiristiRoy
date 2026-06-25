@@ -18,22 +18,15 @@ export const login = asyncHandler(async (req, res) => {
     ip: req.ip,
   });
 
-  // 🔥 SET COOKIES HERE
-  res.cookie("auth_token", out.accessToken, {
-    httpOnly: true,
-    secure:false,
-    sameSite:false,
-    maxAge: 24 * 60 * 60 * 1000, // 1 day
-  });
-
-  res.cookie("refresh_token", out.refreshToken, {
-    httpOnly: true,
-    secure:false,
-    sameSite:false,
-    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-  });
-
-  return ok(res, { user: out.user }, "Logged in");
+  // Frontend is Bearer-token based (localStorage + Authorization header).
+  // Tokens are returned in the body; the client mirrors auth_token/auth_role
+  // into cookies for the edge middleware. No httpOnly cookies here so logout
+  // can fully clear auth client-side.
+  return ok(
+    res,
+    { user: out.user, accessToken: out.accessToken, refreshToken: out.refreshToken },
+    "Logged in"
+  );
 });
 export const refresh = asyncHandler(async (req, res) => {
   const out = await authSvc.refresh(req.body);
@@ -42,6 +35,9 @@ export const refresh = asyncHandler(async (req, res) => {
 
 export const logout = asyncHandler(async (req, res) => {
   await authSvc.logout(req.body);
+  // Clear any legacy httpOnly cookies set by older sessions
+  res.clearCookie("auth_token", { path: "/" });
+  res.clearCookie("refresh_token", { path: "/" });
   ok(res, null, 'Logged out');
 });
 
@@ -138,6 +134,7 @@ export const reset = asyncHandler(async (req, res) => {
 });
 
 export const me = asyncHandler(async (req, res) => {
+  console.log("asdd")
   const User = (await import('../models/User.js')).default;
   const user = await User.findById(req.user.id);
   ok(res, user);

@@ -37,7 +37,7 @@ export function personJsonLd() {
     jobTitle: 'Counselling Psychologist',
     url: BASE_URL,
     telephone: '+918448009694',
-    email: 'contact@awakentherapy.in',
+    email: 'contact@awarenesswithroy.com',
     knowsLanguage: ['en', 'hi', 'bn', 'ur'],
     description: 'Registered Counselling Psychologist. Adlerian-informed integrative therapy.',
     sameAs: ['https://www.instagram.com/awakenwithsrishti'],

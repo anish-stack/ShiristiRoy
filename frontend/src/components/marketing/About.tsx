@@ -26,7 +26,7 @@ import {
 } from "lucide-react"
 
 import therapyImage from "@/assets/therepy.png"
-import therpiest from "@/assets/image_11zon.jpg"
+import therpiest from "@/assets/shristi.jpg"
 import pngImage from "@/assets/pngwing.com.png"
 import { therapistApi } from "@/lib/api"
 import TherapistCard from "./TherapistCard"
@@ -586,9 +586,15 @@ const AboutPractice = () => {
                 {" "}Srishti Roy
               </h2>
 
-              <p className="text-[#6B6578] text-[1.05rem] leading-relaxed mb-10 max-w-lg">
-                With 3,000+ clinical hours across 12+ nationalities, Srishti brings deep expertise in trauma-informed care, cultural sensitivity, and evidence-based therapy — delivering real, lasting change for individuals, students, and athletes.
-              </p>
+              <p className="text-[#6B6578] text-[1.05rem] leading-relaxed mb-6 max-w-lg">
+  With 3,000+ clinical hours across 12+ nationalities, Srishti brings deep expertise in trauma-informed care, cultural sensitivity, and evidence-based therapy — delivering real, lasting change for individuals, students, and athletes.
+</p>
+
+<p className="text-[#6B6578] text-[1.05rem] leading-relaxed mb-10 max-w-lg">
+  Having supported clients from more than 12 national and cultural backgrounds — including those connected to{" "}
+  <strong className="text-[#2A2535] font-medium">South Asia, North America, Europe, the Middle East, Africa, and the Caribbean</strong>{" "}
+  — Srishti brings a culturally informed and globally aware perspective to her work. Her experience with clients from countries such as India, Bangladesh, Pakistan, Sri Lanka, Nepal, Nigeria, Jamaica, Turkey, the UAE, the UK, Canada, Italy, and the United States has deepened her understanding of how culture, migration, family systems, and identity shape mental health and well-being.
+</p>
 
               <div className="space-y-4">
                 {missionPoints.map((pt, i) => (

@@ -61,7 +61,7 @@ export default function PrivacyPolicyPage() {
           <h2>Contact</h2>
           <p>
             For privacy-related concerns, contact us at
-            contact@awakentherapy.in.
+            contact@awarenesswithroy.com.
           </p>
         </div>
       </div>

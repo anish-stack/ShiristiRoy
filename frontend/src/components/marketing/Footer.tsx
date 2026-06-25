@@ -142,14 +142,14 @@ export function Footer() {
             {/* CONTACT */}
             <div className="mt-8 space-y-3 text-sm">
               <a
-                href="mailto:contact@awakentherapy.in"
+                href="mailto:contact@awarenesswithroy.com"
                 className="group flex items-center gap-3 text-white/70 hover:text-white transition"
               >
                 <div className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center group-hover:bg-[#8B5CF6]/20 transition">
                   <Mail size={16} />
                 </div>
 
-                contact@awakentherapy.in
+                contact@awarenesswithroy.com
               </a>
 
               <a

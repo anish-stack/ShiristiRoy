@@ -49,7 +49,7 @@ function formsMissing(a: any) {
 /* ─── component ─────────────────────────────────────────────────── */
 
 export default function DashboardPage() {
-  const { user, clearAuth, fetchMe } = useAuthStore();
+  const { user, logout, fetchMe } = useAuthStore();
   const router = useRouter();
 
   const [appointments, setAppointments] = useState<any[]>([]);
@@ -135,7 +135,7 @@ export default function DashboardPage() {
                 <LayoutDashboard size={15} /> Admin
               </Link>
             )}
-            <button onClick={() => { clearAuth(); router.push('/'); }} style={{
+            <button onClick={async () => { await logout(); router.push('/'); }} style={{
               display: 'inline-flex', alignItems: 'center', gap: 7,
               padding: '9px 18px', borderRadius: 12,
               background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.1)',

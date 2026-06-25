@@ -178,7 +178,7 @@ export default function MessagesPage() {
                   Send reply
                 </Btn>
                 <p className="text-xs text-brand-ink/30 mt-2">
-                  Will send from contact@awakentherapy.in via Nodemailer
+                  Will send from contact@awarenesswithroy.com via Nodemailer
                 </p>
               </div>
             )}
