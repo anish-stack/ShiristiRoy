@@ -15,7 +15,7 @@ export function buildMetadata(opts: {
     title: opts.title,
     description: opts.description,
     keywords: opts.keywords?.join(', '),
-    robots: opts.noindex ? 'noindex,nofollow' : 'index,follow',
+    robots: opts.noindex ? 'noindex,nofollow' : 'noindex,nofollow',
     alternates: { canonical: url },
     openGraph: {
       title: opts.title, description: opts.description, url,
