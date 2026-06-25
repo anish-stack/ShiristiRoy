@@ -172,6 +172,18 @@ export function Navbar() {
                   </div>
                 </Link>
               ))}
+              <Link
+                  href={`/services/workshops`}
+                  className="flex items-start gap-4 p-3 rounded-2xl hover:bg-[#FAF4EE] transition-all group"
+                >
+                
+
+                  <div>
+                    <h2 className="text-sm font-semibold text-[#2E2A27] group-hover:text-[#A06D5F] transition-colors">
+                      Workshops
+                    </h2>
+                  </div>
+                </Link>
             </div>
           </li>
 

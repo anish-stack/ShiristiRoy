@@ -25,8 +25,9 @@ import {
   CheckCircle2,
 } from "lucide-react"
 
-import therapyImage from "@/assets/therepy.png"
-import therpiest from "@/assets/shristi.jpg"
+import speechImage from "@/assets/speech.jpg"
+import therapyImage from "@/assets/unnamed.jpg"
+import therpiest from "@/assets/therepy.jpg"
 import pngImage from "@/assets/pngwing.com.png"
 import { therapistApi } from "@/lib/api"
 import TherapistCard from "./TherapistCard"
@@ -648,7 +649,7 @@ const AboutPractice = () => {
 
               <div className="relative z-10 overflow-hidden rounded-[38px] border-2 border-[#F5C0CF]/60 shadow-2xl shadow-[#D9698A]/10 aspect-[4/5] max-w-sm mx-auto lg:max-w-full">
                 <Image
-                  src={therapyImage}
+                  src={speechImage}
                   alt="Srishti Roy – Counselling Psychologist"
                   fill
                   className="object-cover object-top"
