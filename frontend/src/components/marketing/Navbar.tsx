@@ -275,7 +275,7 @@ export function Navbar() {
                 >
                   <div className="text-xl">
                     {icons[s.slug] ??
-                      '🌸'}
+                      ''}
                   </div>
 
                   <span className="text-sm font-medium text-[#2E2A27]">
@@ -283,6 +283,21 @@ export function Navbar() {
                   </span>
                 </Link>
               ))}
+              <Link
+                  href={`/services/workshops`}
+                  onClick={() =>
+                    setOpen(false)
+                  }
+                  className="flex items-center gap-3 p-3 rounded-2xl bg-[#FAF4EE]"
+                >
+                  <div className="text-xl">
+                    {icons['workshops'] ?? ''}
+                  </div>
+
+                  <span className="text-sm font-medium text-[#2E2A27]">
+                    Workshops
+                  </span>
+                </Link>
             </div>
           </div>
 

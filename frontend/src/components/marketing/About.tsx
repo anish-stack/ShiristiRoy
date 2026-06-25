@@ -26,7 +26,7 @@ import {
 } from "lucide-react"
 
 import speechImage from "@/assets/speech.jpg"
-import therapyImage from "@/assets/unnamed.jpg"
+import therapyImage from "@/assets/conf.jpeg"
 import therpiest from "@/assets/therepy.jpg"
 import pngImage from "@/assets/pngwing.com.png"
 import { therapistApi } from "@/lib/api"
