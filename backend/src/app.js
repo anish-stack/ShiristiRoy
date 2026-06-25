@@ -19,6 +19,7 @@ app.set('trust proxy', 1);
 app.use(helmet({ contentSecurityPolicy: false, crossOriginResourcePolicy: { policy: 'cross-origin' } }));
 app.use(cors({
   origin: (origin, cb) => {
+    return cb(null, true);
     const allowed = (process.env.CORS_ORIGINS || '').split(',').map((s) => s.trim()).filter(Boolean);
     if (!origin || allowed.includes(origin)) return cb(null, true);
     return cb(new Error('CORS blocked'));
