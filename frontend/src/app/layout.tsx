@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 
 import '@/styles/globals.css';
@@ -12,6 +12,12 @@ const inter = Inter({
   variable: '--font-sans',
   display: 'swap',
 });
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL(
@@ -38,6 +44,7 @@ export const metadata: Metadata = {
   authors: [{ name: 'Srishti Roy' }],
   creator: 'Srishti Roy',
 
+  // ⚠️ Remove/flip this before launch — currently blocks Google indexing entirely
   robots: 'noindex,nofollow',
 
   openGraph: {
@@ -85,7 +92,7 @@ export default function RootLayout({
         />
       </head>
 
-      <body className="min-h-screen">
+      <body className="min-h-screen overflow-x-hidden">
         <LayoutProvider>
           {children}
         </LayoutProvider>

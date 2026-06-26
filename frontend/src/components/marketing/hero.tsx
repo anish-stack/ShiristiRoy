@@ -69,10 +69,10 @@ const Hero = () => {
 
                     <div className="flex flex-wrap gap-4 mb-12">
                         <Link
-                            href="/book"
+                            href="/contact"
                             className="group btn-primary flex items-center gap-2"
                         >
-                            Book a Session
+                            Contact us
                             <ArrowRight
                                 size={16}
                                 className="group-hover:translate-x-1 transition"

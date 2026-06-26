@@ -141,7 +141,7 @@ const Therapist = ({ therapists }: TherapistProps) => {
           </div>
           <div className="absolute -bottom-6 -left-6 z-20 max-w-[220px] rounded-2xl border border-white/70 bg-white/80 p-4 shadow-xl shadow-[#3C4D5C]/10 backdrop-blur-sm lg:-left-10">
             <p className="text-[0.72rem] leading-relaxed text-[#6B7280] italic">
-              "Healing is not linear — and that's perfectly okay."
+              "The pathway to healing does not look mass-manufactured."
             </p>
             <div className="mt-2 flex items-center gap-2">
               <div className="h-px flex-1 bg-gradient-to-r from-[#7DA98D]/40 to-transparent" />

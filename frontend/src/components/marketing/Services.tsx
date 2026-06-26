@@ -526,6 +526,34 @@ const Services = () => {
               </motion.div>
             );
           })}
+
+            <div className="card-soft group hover:shadow-md hover:border-brand-lavender/25 transition-all duration-300 flex flex-col">
+              <div className="text-4xl mb-5">🎓</div>
+
+              <h2 className="font-serif text-2xl text-brand-ink mb-3 group-hover:text-brand-lavender transition-colors">
+                Workshops
+              </h2>
+
+              <p className="text-sm text-brand-ink/65 leading-relaxed flex-1">
+                Interactive workshops focused on mental well-being, emotional
+                resilience, personal growth, and practical life skills.
+              </p>
+
+              <div className="mt-6 pt-5 border-t border-brand-lavender/10 flex items-center justify-between">
+                <div>
+                  <p className="text-xs text-brand-ink/40">
+                    Online & In-person
+                  </p>
+                </div>
+
+                <Link
+                  href="/services/workshops"
+                  className="text-brand-lavender hover:underline text-sm font-medium flex items-center gap-1"
+                >
+                  Learn more <ArrowRight size={14} />
+                </Link>
+              </div>
+            </div>
         </div>
 
         {/* ── Footer leaf ── */}
