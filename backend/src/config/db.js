@@ -1,6 +1,5 @@
 import mongoose from 'mongoose';
 import logger from '../utils/logger.js';
-
 export async function connectMongo() {
   mongoose.set('strictQuery', true);
   const uri = process.env.NODE_ENV === 'test' ? process.env.MONGO_URI_TEST : process.env.MONGO_URI;

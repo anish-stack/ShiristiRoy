@@ -314,7 +314,25 @@ export function Footer() {
             </ul>
           </div>
         </div>
+{/* DISCLAIMER */}
+<div className="mt-12 pt-8 border-t border-white/10">
+  <h3 className="text-sm font-semibold uppercase tracking-wider text-white/70 mb-3">
+    Disclaimer
+  </h3>
 
+  <p className="text-sm leading-7 text-white/50 max-w-5xl">
+    Eligibility is confirmed during the initial consultation based on your
+    physical location and applicable professional requirements. This practice
+    does not provide emergency or crisis services. If you are in immediate
+    danger, contact local emergency services or a crisis service in your
+    location.
+  </p>
+</div>
+
+{/* BOTTOM */}
+<div className="flex flex-col lg:flex-row items-center justify-between gap-4 pt-8 text-sm text-white/35">
+  ...
+</div>
         {/* BOTTOM */}
         <div className="flex flex-col lg:flex-row items-center justify-between gap-4 pt-8 text-sm text-white/35">
           <p>

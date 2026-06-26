@@ -59,8 +59,9 @@ export default async function HomePage() {
         />
       )}
 
-      {/* ── HERO ── */}
-      <Hero />
+      {/* ── ABOUT TEASER ── */}
+      <AboutPractice />
+
 
       {/* ── APPROACH STRIP ── */}
       <section className="bg-brand-lavender text-gray-900 py-5 overflow-hidden">
@@ -89,9 +90,7 @@ export default async function HomePage() {
         <style>{`@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}`}</style>
       </section>
 
-      {/* ── ABOUT TEASER ── */}
-      <AboutPractice />
-
+  
       {/* ── SERVICES ── */}
       <Services />
 
