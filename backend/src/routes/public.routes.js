@@ -19,6 +19,7 @@ r.get('/blogs/:slug', c.getBlogBySlug);
 r.get('/testimonials', c.listTestimonials);
 r.get('/faqs', c.listFaqs);
 r.get('/seo/:pageKey', c.getSeo);
+r.get('/settings/public', c.getPublicSettings);
 
 r.post('/contact', validate(contactSchema), c.submitContact);
 

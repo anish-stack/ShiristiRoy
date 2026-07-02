@@ -74,7 +74,11 @@ const transactionSchema = new mongoose.Schema({
   providerOrderId: String,
   providerPaymentId: String,
   intakeForm: String,
+  consentForm: String,
+
   consentDone: String,
+  consentStatus: { type: String, enum: ['pending', 'approved', 'rejected'], default: 'pending' },
+  consentRejectReason: String,
   providerSignature: String,
   amount: { type: Number, required: true },
   currency: { type: String, default: 'INR' },

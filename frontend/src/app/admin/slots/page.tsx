@@ -302,8 +302,9 @@
       }
     };
 
-    const blockSlot=async(
-      slotId:string
+    const toggleSlot=async(
+      slotId:string,
+      currentlyBlocked:boolean
     )=>{
 
       try{
@@ -311,12 +312,12 @@
         await api.patch(
           `/bookings/slots/${slotId}`,
           {
-            status:'blocked',
+            status: currentlyBlocked ? 'available' : 'blocked',
           }
         );
 
         toast(
-          'Slot blocked successfully',
+          currentlyBlocked ? 'Slot unblocked successfully' : 'Slot blocked successfully',
           'success'
         );
 
@@ -326,7 +327,7 @@
 
         toast(
           e.message??
-          'Failed to block slot',
+          (currentlyBlocked ? 'Failed to unblock slot' : 'Failed to block slot'),
           'error'
         );
       }
@@ -645,12 +646,31 @@
                       size="sm"
                       variant="danger"
                       onClick={()=>
-                        blockSlot(
-                          s._id
+                        toggleSlot(
+                          s._id,
+                          false
                         )
                       }
                     >
                       <Ban size={12}/>
+                    </Btn>
+
+                  )}
+
+                  {s.status===
+                    'blocked'&&(
+
+                    <Btn
+                      size="sm"
+                      variant="ghost"
+                      onClick={()=>
+                        toggleSlot(
+                          s._id,
+                          true
+                        )
+                      }
+                    >
+                      Unblock
                     </Btn>
 
                   )}

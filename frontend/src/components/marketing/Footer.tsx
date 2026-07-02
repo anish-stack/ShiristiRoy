@@ -274,6 +274,26 @@ export function Footer() {
                   Loading services...
                 </p>
               )}
+
+               <li
+                       
+                      >
+                        <Link
+                          href={`/services/workshops`}
+                          className="group inline-flex items-center gap-2 text-white/60 hover:text-white transition-all duration-300"
+                        >
+                          <span>
+                           Workshops
+                          </span>
+
+                          <ArrowUpRight
+                            size={
+                              14
+                            }
+                            className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300"
+                          />
+                        </Link>
+                      </li>
             </ul>
           </div>
 

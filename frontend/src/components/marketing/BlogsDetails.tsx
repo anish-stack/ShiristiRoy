@@ -11,6 +11,7 @@ import {
   Tag,
   ArrowLeft,
 } from 'lucide-react';
+import { resolveMediaUrl } from '@/lib/utils';
 
 interface BlogsDetailsProps {
   blog: any;
@@ -25,19 +26,19 @@ const BlogsDetails = ({
     <article className="relative overflow-hidden bg-[#F8F6F2] text-[#2D2A26]">
       {/* HERO */}
       <section className="relative">
-        <div className="relative h-[320px] md:h-[520px] overflow-hidden">
-          <Image
-            src={
-              blog?.coverImage?.url
-            }
-            alt={
-              blog?.coverImage?.alt ||
-              blog?.title
-            }
-            fill
-            priority
-            className="object-cover"
-          />
+        <div className="relative h-[320px] md:h-[520px] overflow-hidden bg-[#EDE8F8]">
+          {blog?.coverImage?.url && (
+            <Image
+              src={resolveMediaUrl(blog.coverImage.url)}
+              alt={
+                blog?.coverImage?.alt ||
+                blog?.title
+              }
+              fill
+              priority
+              className="object-cover"
+            />
+          )}
 
           <div className="absolute inset-0 bg-black/50" />
         </div>

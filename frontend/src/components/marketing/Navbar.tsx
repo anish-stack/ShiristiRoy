@@ -12,7 +12,7 @@ import {
 import logo from '@/assets/logo.png';
 
 import { cn } from '@/lib/utils';
-import { serviceApi } from '@/lib/api';
+import { serviceApi, publicApi } from '@/lib/api';
 import { useAuthStore } from '@/store/auth.store';
 
 const links = [
@@ -23,7 +23,7 @@ const links = [
 ];
 
 const icons: Record<string, string> = {
- 
+
   'family-therapy': '🌿',
   'online-therapy': '💻',
   'young-adult-support': '✨',
@@ -42,7 +42,21 @@ export function Navbar() {
     any[]
   >([]);
 
+  const [logoUrl, setLogoUrl] = useState<string | null>(null);
+
   const { user } = useAuthStore();
+
+  useEffect(() => {
+    publicApi.brandSettings()
+      .then((s) => {
+        const url = s?.['brand.logo']?.url;
+        if (url) {
+          const origin = (process.env.NEXT_PUBLIC_API_URL ?? '').replace(/\/api\/v1\/?$/, '');
+          setLogoUrl(url.startsWith('http') ? url : `${origin}${url}`);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     const onScroll = () =>
@@ -90,14 +104,26 @@ export function Navbar() {
           className="flex items-center gap-3 group"
         >
           <div className=" flex items-center justify-center">
-            <Image
-              src={logo}
-              alt="logo"
-              width={110}
-              height={110}
-              priority
-              className="object-contain"
-            />
+            {logoUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={logoUrl}
+                alt="logo"
+                width={110}
+                height={110}
+                className="object-contain"
+                style={{ width: 110, height: 110 }}
+              />
+            ) : (
+              <Image
+                src={logo}
+                alt="logo"
+                width={110}
+                height={110}
+                priority
+                className="object-contain"
+              />
+            )}
           </div>
 
           {/* <div className="flex flex-col leading-none">
@@ -159,7 +185,7 @@ export function Navbar() {
                   href={`/services/${s.slug}`}
                   className="flex items-start gap-4 p-3 rounded-2xl hover:bg-[#FAF4EE] transition-all group"
                 >
-                
+
 
                   <div>
                     <h2 className="text-sm font-semibold text-[#2E2A27] group-hover:text-[#A06D5F] transition-colors">
@@ -173,17 +199,17 @@ export function Navbar() {
                 </Link>
               ))}
               <Link
-                  href={`/services/workshops`}
-                  className="flex items-start gap-4 p-3 rounded-2xl hover:bg-[#FAF4EE] transition-all group"
-                >
-                
+                href={`/services/workshops`}
+                className="flex items-start gap-4 p-3 rounded-2xl hover:bg-[#FAF4EE] transition-all group"
+              >
 
-                  <div>
-                    <h2 className="text-sm font-semibold text-[#2E2A27] group-hover:text-[#A06D5F] transition-colors">
-                      Workshops
-                    </h2>
-                  </div>
-                </Link>
+
+                <div>
+                  <h2 className="text-sm font-semibold text-[#2E2A27] group-hover:text-[#A06D5F] transition-colors">
+                    Workshops
+                  </h2>
+                </div>
+              </Link>
             </div>
           </li>
 
@@ -207,7 +233,7 @@ export function Navbar() {
             >
               Dashboard
             </Link>
-          ):(
+          ) : (
             <Link
               href="/login"
               className="text-sm font-medium text-[#5F5651] hover:text-[#A06D5F] transition-colors"
@@ -284,20 +310,17 @@ export function Navbar() {
                 </Link>
               ))}
               <Link
-                  href={`/services/workshops`}
-                  onClick={() =>
-                    setOpen(false)
-                  }
-                  className="flex items-center gap-3 p-3 rounded-2xl bg-[#FAF4EE]"
-                >
-                  <div className="text-xl">
-                    {icons['workshops'] ?? ''}
-                  </div>
-
-                  <span className="text-sm font-medium text-[#2E2A27]">
-                    Workshops
-                  </span>
-                </Link>
+                href={`/services/workshops`}
+                onClick={() =>
+                  setOpen(false)
+                }
+                className="flex items-center gap-3 p-3 rounded-2xl bg-[#FAF4EE]"
+              >
+               
+                <span className="text-sm font-medium text-[#2E2A27]">
+                  Workshops
+                </span>
+              </Link>
             </div>
           </div>
 

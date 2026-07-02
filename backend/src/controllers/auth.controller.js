@@ -28,6 +28,15 @@ export const login = asyncHandler(async (req, res) => {
     "Logged in"
   );
 });
+export const google = asyncHandler(async (req, res) => {
+  const out = await authSvc.googleAuth({
+    idToken: req.body.idToken,
+    ua: req.headers['user-agent'],
+    ip: req.ip,
+  });
+  return ok(res, { user: out.user, accessToken: out.accessToken, refreshToken: out.refreshToken }, 'Logged in with Google');
+});
+
 export const refresh = asyncHandler(async (req, res) => {
   const out = await authSvc.refresh(req.body);
   ok(res, out, 'Token refreshed');

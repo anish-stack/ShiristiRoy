@@ -64,7 +64,6 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
         ...init,
         credentials: "include",
         headers: {
-
           'Content-Type': 'application/json',
           ...(t ? { Authorization: `Bearer ${t}` } : {}),
           ...((init.headers as Record<string, string>) ?? {}),
@@ -121,6 +120,7 @@ export const api = {
 export const authApi = {
   register: (d: unknown) => api.post('/auth/register', d),
   login: (d: unknown) => api.post<{ user: User; accessToken: string; refreshToken: string }>('/auth/login', d),
+  google: (idToken: string) => api.post<{ user: User; accessToken: string; refreshToken: string }>('/auth/google', { idToken }),
   logout: (refreshToken: string) => api.post('/auth/logout', { refreshToken }),
   forgotPassword: (email: string) => api.post('/auth/forgot', { email }),
   resetPassword: (d: unknown) => api.post('/auth/reset', d),
@@ -153,6 +153,8 @@ export const slotApi = {
 export const bookingApi = {
   book: (d: unknown) => api.post<Appointment>('/bookings', d),
   myAppointments: () => api.get<Appointment[]>('/bookings/me'),
+  SinglemyAppointments: (id: string) => api.get<Appointment[]>(`/bookings/me/${id}`),
+
   cancel: (id: string, reason?: string) => api.patch(`/bookings/${id}/cancel`, { reason }),
   reschedule: (id: string, newSlotId: string) => api.patch(`/bookings/${id}/reschedule`, { newSlotId }),
   initiatePayment: (d: unknown) => api.post<{ appointment: Appointment; txn: any; order: any }>('/bookings/initiate-payment', d),
@@ -171,6 +173,7 @@ export const publicApi = {
   faqs: () => api.get<Faq[]>('/faqs'),
   contact: (d: unknown) => api.post('/contact', d),
   seo: (page: string) => api.get<SeoMeta>(`/seo/${page}`),
+  brandSettings: () => api.get<Record<string, any>>('/settings/public'),
 };
 
 // Types

@@ -11,10 +11,20 @@ import { rateLimiter } from './middlewares/rateLimit.js';
 import { errorHandler, notFound } from './middlewares/error.js';
 import routes from './routes/index.js';
 import { swaggerSpec } from './docs/swagger.js';
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 
 const app = express();
 const apiBase = `/api/${process.env.API_VERSION || 'v1'}`;
 
+app.use(
+  "/uploads",
+  express.static(path.join(__dirname, "../public/uploads"))
+);
 app.set('trust proxy', 1);
 app.use(helmet({ contentSecurityPolicy: false, crossOriginResourcePolicy: { policy: 'cross-origin' } }));
 app.use(cors({

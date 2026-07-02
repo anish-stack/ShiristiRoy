@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Loader2, Eye, EyeOff, ArrowRight, Sparkles, Check } from 'lucide-react';
 import { authApi } from '@/lib/api';
 import { toast } from '@/components/ui/Toaster';
+import GoogleAuthButton from '@/components/auth/GoogleAuthButton';
 
 const fields = [
   { name: 'name', label: 'Full name', type: 'text', placeholder: ' ', required: true },
@@ -197,6 +198,10 @@ export default function RegisterPage() {
               <div className="h-px flex-1 bg-[#E2D9F3]" />
               <span className="text-[11px] text-[#B0A4CC] uppercase tracking-wider">or</span>
               <div className="h-px flex-1 bg-[#E2D9F3]" />
+            </div>
+
+            <div className="anim-up anim-d7 mb-7">
+              <GoogleAuthButton next="/dashboard" label="signup" />
             </div>
 
             <p className="anim-up anim-d7 text-center text-sm text-[#8B7FA8]">

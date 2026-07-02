@@ -25,12 +25,10 @@ import {
   CheckCircle2,
 } from "lucide-react";
 
-import speechImage from "@/assets/speech.jpg";
+
 import therapyImage from "@/assets/conf.jpeg";
 import therpiest from "@/assets/therepy.jpg";
 import pngImage from "@/assets/pngwing.com.png";
-import { therapistApi } from "@/lib/api";
-import TherapistCard from "./TherapistCard";
 import Hero from "./hero";
 
 const features = [
@@ -145,7 +143,7 @@ const AboutPractice = () => {
 
         <div className="relative grid grid-cols-1 gap-12 lg:grid-cols-2 lg:items-center lg:gap-24">
           {/* ── RIGHT on desktop / FIRST on mobile: TherapistCard ── */}
-          <div className="relative order-1 lg:order-2">
+          <div className="relative order-2 lg:order-2">
             {/* Corner accents */}
             <div className="absolute -left-4 -top-4 z-10 h-16 w-16 rounded-tl-2xl border-l-2 border-t-2 border-[#7DA98D]/40" />
             <div className="absolute -bottom-4 -right-4 z-10 h-16 w-16 rounded-br-2xl border-b-2 border-r-2 border-[#4B7A8C]/30" />
@@ -179,7 +177,7 @@ const AboutPractice = () => {
           </div>
 
           {/* ── LEFT on desktop / SECOND on mobile: all content ── */}
-          <div className="order-2 lg:order-1 flex flex-col gap-6 sm:gap-8 mt-8 lg:mt-0">
+          <div className="order-1 lg:order-1 flex flex-col gap-6 sm:gap-8 mt-8 lg:mt-0">
             {/* Heading */}
             <div className="flex flex-col gap-1">
               <h2

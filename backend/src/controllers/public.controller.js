@@ -1,10 +1,11 @@
 import Therapist from '../models/Therapist.js';
 import Service from '../models/Service.js';
 import User from '../models/User.js';
-import { Blog, Testimonial, Faq, ContactMessage, SeoMetadata } from '../models/index.js';
+import { Blog, Testimonial, Faq, ContactMessage, SeoMetadata, Settings } from '../models/index.js';
 import { Availability, BlockedDate } from '../models/Slot.js';
 import { asyncHandler, ok, ApiError } from '../utils/apiError.js';
 import * as slotSvc from '../services/slot.service.js';
+import { sendEmail, templates } from '../services/email.service.js';
 
 // THERAPIST
 export const listTherapists = asyncHandler(async (req, res) => {
@@ -89,9 +90,23 @@ export const getSeo = asyncHandler(async (req, res) => {
   ok(res, seo);
 });
 
+// GET /settings/public — logo, hero slides & other public "brand" settings
+// (safe subset only — never exposes contact/business/internal groups)
+export const getPublicSettings = asyncHandler(async (_req, res) => {
+  const rows = await Settings.find({ group: 'brand' });
+  const out = {};
+  for (const r of rows) out[r.key] = r.value;
+  ok(res, out);
+});
+
 // CONTACT
 export const submitContact = asyncHandler(async (req, res) => {
-  console.log('Contact form submitted:', req.body);
   const msg = await ContactMessage.create({ ...req.body, ip: req.ip });
+  if (process.env.ADMIN_EMAIL) {
+    await sendEmail({
+      to: process.env.ADMIN_EMAIL,
+      ...templates.adminContactMessage(req.body),
+    }).catch(() => {});
+  }
   ok(res, { id: msg._id }, 'Message received. We will get back soon.', 201);
 });

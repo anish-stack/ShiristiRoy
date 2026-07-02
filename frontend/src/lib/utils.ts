@@ -16,3 +16,13 @@ export function formatTime(d: string | Date) {
 export function slugify(s: string) {
   return s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 }
+
+// Backend uploads (coverImage.url, blog coverImage, consent/intake docs, etc.)
+// are stored as relative paths like "/uploads/xyz.webp". Prefix with the API
+// origin so they resolve correctly wherever the frontend is hosted.
+export function resolveMediaUrl(url?: string | null) {
+  if (!url) return '';
+  if (url.startsWith('http://') || url.startsWith('https://')) return url;
+  const origin = (process.env.NEXT_PUBLIC_API_URL ?? '').replace(/\/api\/v1\/?$/, '');
+  return `${origin}${url}`;
+}

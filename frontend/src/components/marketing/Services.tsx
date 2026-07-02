@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 
 import { serviceApi } from "@/lib/api";
+import { resolveMediaUrl } from "@/lib/utils";
 
 // ─── Static fallback data (mirrors the screenshot) ───────────────────────────
 const FALLBACK_SERVICES = [
@@ -498,7 +499,7 @@ const Services = () => {
                   >
                     {service?.coverImage?.url ? (
                       <Image
-                        src={service.coverImage.url}
+                        src={resolveMediaUrl(service.coverImage.url)}
                         alt={service.name}
                         fill
                         className="object-cover transition-transform duration-700 group-hover:scale-105"

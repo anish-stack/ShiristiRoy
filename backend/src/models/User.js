@@ -7,7 +7,9 @@ const userSchema = new mongoose.Schema({
   name: { type: String, required: true, trim: true, maxlength: 100 },
   email: { type: String, required: true, unique: true, lowercase: true, trim: true, index: true },
   phone: { type: String, trim: true },
-  passwordHash: { type: String, required: true, select: false },
+  passwordHash: { type: String, select: false },
+  authProvider: { type: String, enum: ['local', 'google'], default: 'local' },
+  googleId: { type: String, index: true, sparse: true },
   role: { type: String, enum: Object.values(ROLES), default: ROLES.USER, index: true },
   avatar: { url: String, publicId: String },
   isEmailVerified: { type: Boolean, default: false },
@@ -30,6 +32,7 @@ userSchema.methods.setPassword = async function (plain) {
   this.passwordHash = await bcrypt.hash(plain, Number(process.env.BCRYPT_ROUNDS || 12));
 };
 userSchema.methods.comparePassword = function (plain) {
+  if (!this.passwordHash) return Promise.resolve(false);
   return bcrypt.compare(plain, this.passwordHash);
 };
 

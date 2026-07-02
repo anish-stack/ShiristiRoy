@@ -27,6 +27,55 @@ export async function register({ name, email, password, phone }) {
   return user.toJSON();
 }
 
+// ── Google Sign in / Sign up ────────────────────────────────────────────────
+// Verifies the Google ID token (issued client-side via Google Identity Services)
+// against Google's tokeninfo endpoint — no extra npm package required.
+async function verifyGoogleIdToken(idToken) {
+  const resp = await fetch(`https://oauth2.googleapis.com/tokeninfo?id_token=${encodeURIComponent(idToken)}`);
+  if (!resp.ok) throw new ApiError(401, 'Invalid Google token');
+  const payload = await resp.json();
+  const expectedAud = process.env.GOOGLE_CLIENT_ID;
+  if (expectedAud && payload.aud !== expectedAud) throw new ApiError(401, 'Google token audience mismatch');
+  if (!payload.email) throw new ApiError(401, 'Google account has no email');
+  return payload; // { sub, email, name, picture, email_verified, ... }
+}
+
+export async function googleAuth({ idToken, ua, ip }) {
+  if (!idToken) throw new ApiError(400, 'Missing Google credential');
+  const g = await verifyGoogleIdToken(idToken);
+
+  let user = await User.findOne({ $or: [{ googleId: g.sub }, { email: g.email }] });
+
+  if (!user) {
+    user = new User({
+      name: g.name || g.email.split('@')[0],
+      email: g.email,
+      role: ROLES.USER,
+      authProvider: 'google',
+      googleId: g.sub,
+      isEmailVerified: g.email_verified === 'true' || g.email_verified === true,
+      avatar: g.picture ? { url: g.picture } : undefined,
+    });
+    // random unusable password hash placeholder not needed — passwordHash is optional now
+    await user.save();
+  } else if (!user.googleId) {
+    // existing local-password account signing in with Google for first time — link it
+    user.googleId = g.sub;
+    if (g.email_verified === 'true' || g.email_verified === true) user.isEmailVerified = true;
+    await user.save();
+  }
+
+  if (!user.isActive) throw new ApiError(401, 'Account disabled');
+
+  const access = signAccess(buildPayload(user));
+  const { token: refresh, jti } = signRefresh(buildPayload(user));
+  const ttlSec = Math.floor(ms(process.env.JWT_REFRESH_EXPIRES_IN || '7d') / 1000);
+  await storeRefreshJti(user._id.toString(), jti, ttlSec);
+  user.lastLoginAt = new Date();
+  await user.save();
+  return { user: user.toJSON(), accessToken: access, refreshToken: refresh };
+}
+
 export async function verifyEmail({ email, token }) {
   const user = await User.findOne({ email }).select('+emailVerifyToken +emailVerifyExpires');
   if (!user) throw new ApiError(404, 'User not found');
