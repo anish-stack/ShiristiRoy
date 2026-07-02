@@ -75,7 +75,7 @@ export async function holdSlot({ slotId, userId, ttlMs = HOLD_TTL_MS }) {
       throw new ApiError(409, "Slot is already held by another user.");
     }
 
-    
+
     // 2. Check MongoDB
     const slot = await Slot.findById(slotId);
 
@@ -112,7 +112,7 @@ export async function holdSlot({ slotId, userId, ttlMs = HOLD_TTL_MS }) {
     return slot;
   } finally {
     if (lock) {
-      await lock.release().catch(() => {});
+      await lock.release().catch(() => { });
     }
   }
 }
@@ -141,30 +141,33 @@ export async function releaseHold({ slotId, userId }) {
  * Returns { appointment, txn, order } to client for checkout.
  */
 export async function initiatePayment({ userId, slotId, serviceId, mode, amount, intake = {} }) {
-  // hold slot first — 409 if unavailable
-  // await holdSlot({ slotId, userId });
 
   // fetch slot for startAt/endAt/therapist
   const slot = await Slot.findById(slotId).lean();
   if (!slot) throw new ApiError(404, 'Slot not found');
 
   // idempotent: reuse existing pending appointment for same (user, slot)
-  let appt = await Appointment.findOne({ user: userId, slot: slotId });
-  if (!appt) {
-    appt = await Appointment.create({
-      bookingCode: `SR-${code()}`,
-      user: userId,
-      therapist: slot.therapist,
-      service: serviceId || undefined,
-      slot: slotId,
-      startAt: slot.startAt,
-      endAt: slot.endAt,
-      mode: mode || slot.mode,
-      status: APPOINTMENT_STATUS.PENDING,
-      intake,
-    });
-  }
-
+  const appt = await Appointment.findOneAndUpdate(
+    { slot: slotId },
+    {
+      $setOnInsert: {
+        bookingCode: `SR-${code()}`,
+        user: userId,
+        therapist: slot.therapist,
+        service: serviceId,
+        slot: slotId,
+        startAt: slot.startAt,
+        endAt: slot.endAt,
+        mode: mode || slot.mode,
+        status: APPOINTMENT_STATUS.PENDING,
+        intake,
+      },
+    },
+    {
+      upsert: true,
+      new: true,
+    }
+  );
   // create Razorpay order
   const rzOrder = await _createRzOrder({
     amount,
@@ -213,10 +216,10 @@ export async function confirmPayment({ userId, slotId, txnId, paymentId, signatu
     await releaseHold({ slotId, userId }).catch(() => { });
     const failedUser = await User.findById(userId).catch(() => null);
     if (failedUser?.email) {
-      await sendEmail({ to: failedUser.email, ...templates.bookingFailed({ reason: 'signature verification failed' }) }).catch(() => {});
+      await sendEmail({ to: failedUser.email, ...templates.bookingFailed({ reason: 'signature verification failed' }) }).catch(() => { });
     }
     if (process.env.ADMIN_EMAIL) {
-      await sendEmail({ to: process.env.ADMIN_EMAIL, ...templates.adminPaymentFailed({ userEmail: failedUser?.email || userId, reason: 'signature verification failed' }) }).catch(() => {});
+      await sendEmail({ to: process.env.ADMIN_EMAIL, ...templates.adminPaymentFailed({ userEmail: failedUser?.email || userId, reason: 'signature verification failed' }) }).catch(() => { });
     }
     throw new ApiError(400, 'Payment verification failed');
   }
@@ -540,6 +543,6 @@ async function _afterBook(appointment) {
         startAt: appointment.startAt.toString(),
         bookingCode: appointment.bookingCode,
       }),
-    }).catch(() => {});
+    }).catch(() => { });
   }
 }
