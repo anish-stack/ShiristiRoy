@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useState, useCallback } from 'react';
-import { UserCheck, UserX, Plus } from 'lucide-react';
+import { UserCheck, UserX, Plus, Eye } from 'lucide-react';
 import { api } from '@/lib/api';
 import { formatDate } from '@/lib/utils';
 import { toast } from '@/components/ui/Toaster';
@@ -26,6 +26,19 @@ export default function UsersPage() {
   const [inviteOpen, setInviteOpen] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<User | null>(null);
   const [form, setForm] = useState({ name: '', email: '', role: 'user', password: '' });
+
+  const [detail, setDetail] = useState<any | null>(null);
+  const [detailLoading, setDetailLoading] = useState(false);
+
+  const openDetail = async (u: User) => {
+    setDetailLoading(true);
+    setDetail(null);
+    try {
+      const d = await api.get(`/admin/users/${u._id}`);
+      setDetail(d);
+    } catch { toast('Failed to load user details', 'error'); }
+    finally { setDetailLoading(false); }
+  };
 
   const fetchUsers = useCallback(async () => {
     setLoading(true);
@@ -115,6 +128,7 @@ export default function UsersPage() {
               : <UserX key="v" size={14} className="text-red-400" />,
             <span key="j" className="text-brand-ink/50 text-xs">{formatDate(u.createdAt, { day: 'numeric', month: 'short', year: 'numeric' })}</span>,
             <div key="a" className="flex gap-1">
+              <Btn size="sm" variant="ghost" onClick={() => openDetail(u)}><Eye size={13} /></Btn>
               <Btn size="sm" variant={u.isActive ? 'danger' : 'primary'} onClick={() => toggle(u)}>
                 {u.isActive ? 'Deactivate' : 'Activate'}
               </Btn>
@@ -145,6 +159,53 @@ export default function UsersPage() {
             <input type="password" className={inputCls} value={form.password} onChange={(e) => setForm((p) => ({ ...p, password: e.target.value }))} placeholder="Min 8 characters" />
           </Field>
         </div>
+      </Modal>
+
+      {/* View full details modal */}
+      <Modal open={!!detail || detailLoading} onClose={() => setDetail(null)} title="User details">
+        {detailLoading && <p className="text-center py-10 text-brand-ink/40 text-sm">Loading…</p>}
+        {detail?.user && (
+          <div className="space-y-5 text-sm">
+            <div className="grid grid-cols-2 gap-3">
+              {[
+                ['Name', detail.user.name],
+                ['Email', detail.user.email],
+                ['Phone', detail.user.phone || '—'],
+                ['Role', detail.user.role],
+                ['Status', detail.user.isActive ? 'Active' : 'Inactive'],
+                ['Email verified', detail.user.isEmailVerified ? 'Yes' : 'No'],
+                ['Sign-up method', detail.user.authProvider === 'google' ? 'Google' : 'Email/Password'],
+                ['Joined', formatDate(detail.user.createdAt, { day: 'numeric', month: 'short', year: 'numeric' })],
+                ['Last login', detail.user.lastLoginAt ? formatDate(detail.user.lastLoginAt, { day: 'numeric', month: 'short', year: 'numeric' }) : '—'],
+                ['Preferred language', detail.user.preferredLanguage || 'en'],
+              ].map(([k, v]) => (
+                <div key={k} className="flex justify-between border-b border-brand-lavender/10 pb-2 gap-2">
+                  <span className="text-brand-ink/40 flex-shrink-0">{k}</span>
+                  <span className="font-medium text-brand-ink text-right capitalize">{v}</span>
+                </div>
+              ))}
+            </div>
+
+            <div>
+              <p className="text-xs font-semibold text-brand-ink/50 uppercase tracking-wide mb-2">
+                Appointments ({detail.appointments?.length ?? 0})
+              </p>
+              {detail.appointments?.length ? (
+                <div className="space-y-2 max-h-64 overflow-y-auto pr-1">
+                  {detail.appointments.map((a: any) => (
+                    <div key={a._id} className="rounded-xl bg-brand-lavender/5 p-3 flex items-center justify-between gap-2">
+                      <div>
+                        <p className="font-mono text-xs text-brand-lavender">{a.bookingCode}</p>
+                        <p className="text-brand-ink/60 text-xs">{a.service?.name ?? 'Session'} · {formatDate(a.startAt, { day: 'numeric', month: 'short', year: 'numeric' })}</p>
+                      </div>
+                      <Badge label={a.status} variant={a.status === 'confirmed' ? 'green' : a.status === 'cancelled' ? 'red' : a.status === 'completed' ? 'blue' : 'amber'} />
+                    </div>
+                  ))}
+                </div>
+              ) : <p className="text-brand-ink/30">No appointments yet</p>}
+            </div>
+          </div>
+        )}
       </Modal>
     </AdminPage>
   );

@@ -9,9 +9,9 @@ import {
     AlertTriangle, XCircle, ShieldCheck, BookOpen,
     User, Tag, Hash,
 } from 'lucide-react';
-import { api, bookingApi } from '@/lib/api';
+import { bookingApi } from '@/lib/api';
 import { useAuthStore } from '@/store/auth.store';
-import { formatDate, formatTime } from '@/lib/utils';
+import { formatDate, formatTime, resolveMediaUrl } from '@/lib/utils';
 import { toast } from '@/components/ui/Toaster';
 /* ─── constants ─────────────────────────────────────────────────── */
 
@@ -51,18 +51,18 @@ function StatusBadge({ status }: { status: string }) {
 
 function InfoRow({ label, value, icon }: { label: string; value: React.ReactNode; icon?: React.ReactNode }) {
     return (
-        <div className="flex items-center justify-between gap-4 border-b border-black/5 py-3 last:border-b-0">
-            <span className="flex items-center gap-2 text-xs text-slate-400">
+        <div className="flex items-center justify-between gap-3 border-b border-black/5 py-3 last:border-b-0">
+            <span className="flex items-center gap-2 text-xs text-slate-400 shrink-0">
                 {icon} {label}
             </span>
-            <span className="text-right text-sm font-medium text-slate-700">{value}</span>
+            <span className="text-right text-sm font-medium text-slate-700 break-words">{value}</span>
         </div>
     );
 }
 
 function Card({ children, highlight }: { children: React.ReactNode; highlight?: boolean }) {
     return (
-        <div className={`rounded-2xl border bg-white p-5 sm:p-6 ${highlight ? 'border-amber-300' : 'border-black/[0.06]'} mb-4`}>
+        <div className={`rounded-2xl border bg-white p-4 sm:p-6 ${highlight ? 'border-amber-300' : 'border-black/[0.06]'} mb-4`}>
             {children}
         </div>
     );
@@ -71,7 +71,7 @@ function Card({ children, highlight }: { children: React.ReactNode; highlight?: 
 function SectionHeader({ title, icon }: { title: string; icon: React.ReactNode }) {
     return (
         <div className="mb-4 flex items-center gap-2.5">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-violet-50">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-violet-50 shrink-0">
                 {icon}
             </div>
             <h3 className="font-serif text-base font-medium text-slate-800">{title}</h3>
@@ -97,11 +97,10 @@ export default function AppointmentDetailPage() {
 
     useEffect(() => {
         if (!user) { router.push('/login?next=/dashboard'); return; }
-        bookingApi.myAppointments()
+        bookingApi.SinglemyAppointments(id)
             .then((res: any) => {
-                const found = (res || []).find((a: any) => a._id === id);
-                if (!found) { router.push('/dashboard'); return; }
-                setAppt(found);
+                if (!res) { router.push('/dashboard'); return; }
+                setAppt(res);
             })
             .catch(() => toast('Failed to load appointment', 'error'))
             .finally(() => setLoading(false));
@@ -133,20 +132,26 @@ export default function AppointmentDetailPage() {
             const form = new FormData();
             form.append('file', file);
             form.append('type', type);
-            const res = await api.post(
-                `/bookings/me/${id}/documents`,
-                form
-               
-            );
-            console.log(res)
-            if (!res.ok) throw new Error('Upload failed');
+
+            const BASE = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:5000/api/v1';
+            const token = getToken();
+            const res = await fetch(`${BASE}/bookings/me/${id}/documents`, {
+                method: 'POST',
+                credentials: 'include',
+                headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+                body: form,
+            });
             const json = await res.json();
+            if (!res.ok) throw new Error(json?.message || 'Upload failed');
+
             setAppt((p: any) => ({
                 ...p,
                 payment: {
                     ...p.payment,
-                    ...(type === 'intake' ? { intakeForm: json.data?.url || 'uploaded' } : {}),
-                    ...(type === 'consent' ? { consent: json.data?.url || 'uploaded' } : {}),
+                    intakeForm: json.data?.intakeForm ?? p.payment?.intakeForm,
+                    consentDone: type === 'consent' ? true : p.payment?.consentDone,
+                    consentStatus: json.data?.consentStatus ?? p.payment?.consentStatus,
+                    ...(type === 'consent' ? { consentForm: json.data?.consentForm ?? json.data?.uploadedUrl } : {}),
                 },
             }));
             toast(`${type === 'intake' ? 'Intake' : 'Consent'} form uploaded`, 'success');
@@ -169,8 +174,9 @@ export default function AppointmentDetailPage() {
     const hoursToStart = appt ? (new Date(appt.startAt).getTime() - Date.now()) / 3_600_000 : 0;
     const canCancel = isUpcoming && appt.status !== 'cancelled' && hoursToStart >= 4;
     const intakeDone = !!appt?.payment?.intakeForm;
-    const consentDone = !!appt?.payment?.consent;
-    const formsMissing = isUpcoming && (!intakeDone || !consentDone);
+    const consentDone = !!appt?.payment?.consentDone;
+    const consentRejected = appt?.payment?.consentStatus === 'rejected';
+    const formsMissing = isUpcoming && (!intakeDone || !consentDone || consentRejected);
 
     if (loading) {
         return (
@@ -188,7 +194,10 @@ export default function AppointmentDetailPage() {
             label: 'Intake Form',
             desc: 'Background information about you and your concerns.',
             downloadUrl: INTAKE_FORM_URL,
+            fileUrl: appt?.payment?.intakeForm ? resolveMediaUrl(appt.payment.intakeForm) : '',
             done: intakeDone,
+            rejected: false,
+            rejectReason: '',
             uploading: uploadingIntake,
             ref: intakeRef,
             icon: <BookOpen className="h-4 w-4 text-violet-500" />,
@@ -198,7 +207,10 @@ export default function AppointmentDetailPage() {
             label: 'Consent Form',
             desc: 'Informed consent covering confidentiality and session policies.',
             downloadUrl: CONSENT_FORM_URL,
-            done: consentDone,
+            fileUrl: appt?.payment?.consentForm ? resolveMediaUrl(appt.payment.consentForm) : '',
+            done: consentDone && !consentRejected,
+            rejected: consentRejected,
+            rejectReason: appt?.payment?.consentRejectReason || '',
             uploading: uploadingConsent,
             ref: consentRef,
             icon: <ShieldCheck className="h-4 w-4 text-emerald-500" />,
@@ -206,7 +218,7 @@ export default function AppointmentDetailPage() {
     ];
 
     return (
-        <div className="min-h-screen bg-[#F8F5F2] px-4 pb-16 pt-24 font-sans sm:px-6">
+        <div className="min-h-screen bg-[#F8F5F2] px-3 sm:px-6 pb-16 pt-20 sm:pt-24 font-sans overflow-x-hidden">
             <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap');
         .font-sans { font-family: 'DM Sans', sans-serif; }
@@ -221,14 +233,14 @@ export default function AppointmentDetailPage() {
                 {/* back */}
                 <Link
                     href="/dashboard"
-                    className="mb-6 inline-flex items-center gap-1.5 text-sm text-slate-400 transition-colors hover:text-violet-400"
+                    className="mb-5 sm:mb-6 inline-flex items-center gap-1.5 text-sm text-slate-400 transition-colors hover:text-violet-400"
                 >
                     <ChevronLeft className="h-4 w-4" /> Back to dashboard
                 </Link>
 
                 {/* forms alert */}
                 {formsMissing && (
-                    <div className="fade-in mb-4 flex items-start gap-3 rounded-2xl border border-amber-300 bg-amber-50 p-4">
+                    <div className="fade-in mb-4 flex items-start gap-3 rounded-2xl border border-amber-300 bg-amber-50 p-3.5 sm:p-4">
                         <AlertTriangle className="mt-0.5 h-4 w-4 flex-shrink-0 text-amber-600" />
                         <div>
                             <p className="mb-1 text-sm font-semibold text-amber-800">
@@ -242,21 +254,21 @@ export default function AppointmentDetailPage() {
                 )}
 
                 {/* header card */}
-                <div className="fade-in mb-4 rounded-3xl bg-gradient-to-br from-[#2D2A26] to-[#4a3f55] p-6 text-white shadow-xl shadow-black/10 sm:p-7">
-                    <div className="flex flex-wrap items-start justify-between gap-4">
-                        <div>
+                <div className="fade-in mb-4 rounded-2xl sm:rounded-3xl bg-gradient-to-br from-[#2D2A26] to-[#4a3f55] p-4 sm:p-7 text-white shadow-xl shadow-black/10">
+                    <div className="flex flex-wrap items-start justify-between gap-3 sm:gap-4">
+                        <div className="min-w-0">
                             <StatusBadge status={appt.status} />
-                            <h2 className="mt-3 font-serif text-2xl font-medium text-white">
+                            <h2 className="mt-3 font-serif text-xl sm:text-2xl font-medium text-white break-words">
                                 {appt.service?.name || 'Therapy Session'}
                             </h2>
-                            <p className="mt-1 font-mono text-xs tracking-wider text-white/40">
+                            <p className="mt-1 font-mono text-xs tracking-wider text-white/40 break-all">
                                 {appt.bookingCode}
                             </p>
                         </div>
                         {appt.payment?.amount && (
-                            <div className="text-right">
+                            <div className="text-right shrink-0">
                                 <p className="mb-1 text-[11px] uppercase tracking-wider text-white/40">Fee paid</p>
-                                <p className="font-serif text-2xl font-medium text-[#E9D7C3]">
+                                <p className="font-serif text-xl sm:text-2xl font-medium text-[#E9D7C3]">
                                     ₹{appt.payment.amount.toLocaleString('en-IN')}
                                 </p>
                             </div>
@@ -264,23 +276,23 @@ export default function AppointmentDetailPage() {
                     </div>
 
                     {/* date/time strip */}
-                    <div className="mt-5 flex flex-wrap gap-x-6 gap-y-2 border-t border-white/10 pt-4 text-sm text-white/75">
+                    <div className="mt-5 flex flex-wrap gap-x-5 sm:gap-x-6 gap-y-2 border-t border-white/10 pt-4 text-xs sm:text-sm text-white/75">
                         <span className="flex items-center gap-2">
-                            <Calendar className="h-3.5 w-3.5 text-[#c4b8e8]" /> {formatDate(appt.startAt)}
+                            <Calendar className="h-3.5 w-3.5 text-[#c4b8e8] shrink-0" /> {formatDate(appt.startAt)}
                         </span>
                         <span className="flex items-center gap-2">
-                            <Clock3 className="h-3.5 w-3.5 text-[#c4b8e8]" /> {formatTime(appt.startAt)} – {formatTime(appt.endAt)}
+                            <Clock3 className="h-3.5 w-3.5 text-[#c4b8e8] shrink-0" /> {formatTime(appt.startAt)} – {formatTime(appt.endAt)}
                         </span>
                         <span className="flex items-center gap-2 capitalize">
                             {appt.mode === 'online'
-                                ? <Video className="h-3.5 w-3.5 text-[#a8d5b5]" />
-                                : <MapPin className="h-3.5 w-3.5 text-[#a8d5b5]" />}
+                                ? <Video className="h-3.5 w-3.5 text-[#a8d5b5] shrink-0" />
+                                : <MapPin className="h-3.5 w-3.5 text-[#a8d5b5] shrink-0" />}
                             {appt.mode?.replace('_', ' ')}
                         </span>
                     </div>
                 </div>
 
-                <div className='grid grid-cols-2 gap-5 '>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
                     {/* details card */}
                     <Card>
                         <SectionHeader title="Session details" icon={<Tag className="h-4 w-4 text-violet-500" />} />
@@ -312,7 +324,7 @@ export default function AppointmentDetailPage() {
                             {appt.payment.providerPaymentId && (
                                 <InfoRow
                                     label="Payment ID"
-                                    value={<span className="font-mono text-xs">{appt.payment.providerPaymentId}</span>}
+                                    value={<span className="font-mono text-xs break-all">{appt.payment.providerPaymentId}</span>}
                                 />
                             )}
                             {appt.payment.status === 'refunded' && appt.payment.refund && (
@@ -325,30 +337,6 @@ export default function AppointmentDetailPage() {
                     )}
                 </div>
 
-                {/* intake notes */}
-                {/* {(appt.intake?.primaryConcern || appt.intake?.notes) && (
-          <Card>
-            <SectionHeader title="Your intake notes" icon={<BookOpen className="h-4 w-4 text-emerald-500" />} />
-            {appt.intake.primaryConcern && (
-              <div className="mb-3">
-                <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-wider text-slate-400">Primary concern</p>
-                <p className="text-sm leading-relaxed text-slate-600">{appt.intake.primaryConcern}</p>
-              </div>
-            )}
-            {appt.intake.notes && (
-              <div>
-                <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-wider text-slate-400">Additional notes</p>
-                <p className="text-sm leading-relaxed text-slate-600">{appt.intake.notes}</p>
-              </div>
-            )}
-            {appt.intake.prevTherapy && (
-              <p className="mt-3 flex items-center gap-1.5 text-xs text-emerald-600">
-                <CheckCircle2 className="h-3 w-3" /> Has had therapy before
-              </p>
-            )}
-          </Card>
-        )} */}
-
                 {/* forms card */}
                 <Card highlight={formsMissing}>
                     <SectionHeader title="Required forms" icon={<FileText className="h-4 w-4 text-sky-500" />} />
@@ -357,21 +345,25 @@ export default function AppointmentDetailPage() {
                         {forms.map(f => (
                             <div
                                 key={f.key}
-                                className={`rounded-xl border p-4 ${f.done ? 'border-emerald-200 bg-emerald-50/40' : 'border-violet-200/60 bg-[#FDFCFB]'}`}
+                                className={`rounded-xl border p-3.5 sm:p-4 ${f.rejected ? 'border-red-200 bg-red-50/40' : f.done ? 'border-emerald-200 bg-emerald-50/40' : 'border-violet-200/60 bg-[#FDFCFB]'}`}
                             >
                                 <div className="flex flex-wrap items-start justify-between gap-3">
-                                    <div className="flex items-start gap-3">
+                                    <div className="flex items-start gap-3 min-w-0">
                                         <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg border border-black/[0.07] bg-white">
                                             {f.icon}
                                         </div>
-                                        <div>
+                                        <div className="min-w-0">
                                             <p className="text-sm font-semibold text-slate-800">{f.label}</p>
                                             <p className="text-xs text-slate-400">{f.desc}</p>
                                         </div>
                                     </div>
 
-                                    <div className="flex flex-shrink-0 items-center gap-2">
-                                        {f.done ? (
+                                    <div className="flex flex-wrap flex-shrink-0 items-center gap-2">
+                                        {f.rejected ? (
+                                            <span className="inline-flex items-center gap-1.5 rounded-full bg-red-50 px-2.5 py-1 text-xs font-semibold text-red-700">
+                                                <AlertTriangle className="h-3 w-3" /> Rejected — re-upload needed
+                                            </span>
+                                        ) : f.done ? (
                                             <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700">
                                                 <CheckCircle2 className="h-3 w-3" /> Uploaded
                                             </span>
@@ -384,10 +376,24 @@ export default function AppointmentDetailPage() {
                                                 <Download className="h-3 w-3" /> Download
                                             </a>
                                         )}
+                                        {f.fileUrl && (
+                                            <a
+                                                href={f.fileUrl}
+                                                target="_blank"
+                                                rel="noreferrer"
+                                                className="inline-flex items-center gap-1.5 rounded-lg border border-black/[0.08] bg-white px-3 py-1.5 text-xs font-medium text-slate-600 hover:bg-slate-50"
+                                            >
+                                                <FileText className="h-3 w-3" /> View file
+                                            </a>
+                                        )}
                                     </div>
                                 </div>
 
-                                {!f.done && isUpcoming && (
+                                {f.rejected && f.rejectReason && (
+                                    <p className="mt-2 text-xs text-red-600">Reason: {f.rejectReason}</p>
+                                )}
+
+                                {(!f.done || f.rejected) && isUpcoming && (
                                     <>
                                         <input
                                             type="file"
@@ -412,7 +418,7 @@ export default function AppointmentDetailPage() {
                                             ) : (
                                                 <>
                                                     <Upload className="h-3.5 w-3.5 text-violet-400" />
-                                                    <span className="text-xs font-medium text-violet-400">Click to upload filled PDF</span>
+                                                    <span className="text-xs font-medium text-violet-400 text-center">{f.rejected ? 'Click to re-upload corrected file' : 'Click to upload filled PDF'}</span>
                                                 </>
                                             )}
                                         </div>
@@ -451,7 +457,7 @@ export default function AppointmentDetailPage() {
                             <button
                                 onClick={handleCancel}
                                 disabled={!canCancel || cancelling}
-                                className={`inline-flex items-center gap-2 rounded-lg border px-5 py-2.5 text-sm font-semibold transition-colors ${canCancel
+                                className={`inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-lg border px-5 py-2.5 text-sm font-semibold transition-colors ${canCancel
                                         ? 'cursor-pointer border-red-200 bg-red-50 text-red-700 hover:bg-red-100'
                                         : 'cursor-not-allowed border-black/[0.08] bg-zinc-100 text-zinc-400'
                                     }`}

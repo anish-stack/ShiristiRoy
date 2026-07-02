@@ -1,475 +1,152 @@
-# Srishti Roy — Therapy Booking Platform
+# Srishti Roy Counselling — Therapy Booking Platform
 
-**Enterprise-grade therapy website + booking system**  
-Stack: Next.js 14 · Node.js/Express · MongoDB · Redis · Redlock · JWT · Tailwind · Shadcn · Framer Motion
+A full-stack therapy/counselling booking platform.
 
-> Brand: Lavender · Sage · Dusty Blue · Warm Ivory  
-> Tagline: *Healing through awareness, reflection, and self-understanding.*
-
----
-
-## Table of Contents
-1. [Project Structure](#project-structure)
-2. [Quick Start](#quick-start)
-3. [Environment Variables](#environment-variables)
-4. [Database Schemas](#database-schemas)
-5. [API Route Reference](#api-route-reference)
-6. [Booking Concurrency Strategy](#booking-concurrency-strategy)
-7. [Redis Strategy](#redis-strategy)
-8. [Deployment Guide](#deployment-guide)
-9. [Security Checklist](#security-checklist)
-10. [Implementation Phases](#implementation-phases)
+- **Frontend:** Next.js (App Router), Tailwind CSS, Zustand
+- **Backend:** Node.js, Express, MongoDB (Mongoose), Redis
+- **Payments:** Razorpay
+- **Email:** Nodemailer (SMTP)
+- **Rich text / CMS:** Jodit editor (blogs, service descriptions)
 
 ---
 
-## Project Structure
+## 1. Project structure
 
 ```
-srishti-platform/
-├── backend/
-│   ├── src/
-│   │   ├── config/          # db.js, redis.js
-│   │   ├── models/          # User, Therapist, Slot, Appointment, Blog, ...
-│   │   ├── services/        # auth, token, booking, slot, email, payment
-│   │   ├── controllers/     # auth, public, booking, admin
-│   │   ├── routes/          # auth, public, booking, admin, payment
-│   │   ├── middlewares/     # auth (JWT+RBAC), error, rateLimit, validate
-│   │   ├── validators/      # Zod schemas
-│   │   ├── utils/           # logger, apiError, ms, seed
-│   │   ├── jobs/            # cron.js (hold sweeper + reminders)
-│   │   ├── docs/            # swagger.js
-│   │   ├── app.js
-│   │   └── server.js
-│   ├── .env.example
-│   ├── Dockerfile
-│   └── package.json
+z/
+├── frontend/          Next.js app (marketing site + client dashboard + admin panel)
+│   └── src/
+│       ├── app/            routes: (marketing), (auth), dashboard, admin
+│       ├── components/     marketing/, admin/, auth/, ui/
+│       ├── lib/             api.ts (typed API client), utils.ts, seo.ts
+│       └── store/           auth.store.ts, booking.store.ts (Zustand)
 │
-├── frontend/
-│   ├── src/
-│   │   ├── app/
-│   │   │   ├── (marketing)/     # about, services, blog, contact, book
-│   │   │   ├── (auth)/          # login, register, verify, forgot, reset
-│   │   │   ├── dashboard/       # user dashboard, appointments, profile
-│   │   │   ├── admin/           # admin CMS: users, appts, blogs, SEO, settings
-│   │   │   ├── layout.tsx       # root layout, fonts, Navbar, Footer
-│   │   │   ├── page.tsx         # homepage
-│   │   │   ├── sitemap.ts
-│   │   │   └── robots.ts
-│   │   ├── components/
-│   │   │   ├── marketing/       # Navbar, Footer, Hero, TestimonialCard ...
-│   │   │   ├── booking/         # BookingFlow, SlotPicker, IntakeForm ...
-│   │   │   ├── dashboard/       # AppointmentCard, ProfileForm ...
-│   │   │   ├── admin/           # AdminSidebar, DataTable, CmsEditor ...
-│   │   │   └── ui/              # Toaster, Button, Input, Modal, Skeleton ...
-│   │   ├── lib/                 # api.ts, utils.ts, seo.ts
-│   │   ├── store/               # auth.store.ts, booking.store.ts (Zustand)
-│   │   ├── hooks/               # useAppointments, useSlots, useAuth ...
-│   │   └── styles/globals.css
-│   ├── .env.local.example
-│   ├── Dockerfile
-│   └── package.json
-│
-├── docker-compose.yml
-└── README.md
+└── backend/           Express API
+    └── src/
+        ├── controllers/     auth, public, booking, admin
+        ├── services/        auth, booking, slot, payment, razorpay, email, token
+        ├── models/          User, Therapist, Service, Slot, Appointment, index.js (Blog/Testimonial/Faq/Settings/Transaction/AuditLog/ContactMessage)
+        ├── middlewares/      auth, upload (image/file), rateLimit, validate, error
+        ├── routes/           auth, public, booking, admin, payment
+        └── jobs/             cron.js (slot-hold sweeper + 24h/12h reminders)
 ```
 
 ---
 
-## Quick Start
+## 2. Setup
 
-### Prerequisites
-- Node.js 20+, Docker (optional), MongoDB 7, Redis 7
+Both `frontend/` and `backend/` already have their `.env` files filled in for this
+deployment. Node modules are **not** included — install before running:
 
-### 1. Backend
+```bash
+cd backend && npm install
+cd frontend && npm install
+```
+
+### Backend
 
 ```bash
 cd backend
-cp .env.example .env
-# Fill in MONGO_URI, REDIS_*, JWT secrets, SMTP, Cloudinary
-
-npm install
-npm run seed          # creates admin user, Srishti profile, services, FAQs, SEO data
-npm run dev           # :5000
+npm run seed   # optional — seeds therapist/services demo data
+npm run dev    # nodemon, http://localhost:4129
 ```
 
-Swagger docs at `http://localhost:5000/api-docs`
-
-### 2. Frontend
+### Frontend
 
 ```bash
 cd frontend
-cp .env.local.example .env.local
-# Set NEXT_PUBLIC_API_URL and NEXT_PUBLIC_THERAPIST_ID (from seed output)
-
-npm install
-npm run dev           # :3000
-```
-
-### 3. Docker (full stack)
-
-```bash
-# Fill backend/.env first
-docker-compose up --build
+npm run dev    # http://localhost:3000
 ```
 
 ---
 
-## Environment Variables
+## 3. Environment variables
 
-### Backend `.env`
+### `backend/.env`
 
-| Key | Purpose |
-|-----|---------|
+| Variable | Purpose |
+|---|---|
 | `MONGO_URI` | MongoDB connection string |
-| `REDIS_HOST/PORT/PASSWORD` | Redis connection |
-| `JWT_ACCESS_SECRET` | 64+ random chars |
-| `JWT_REFRESH_SECRET` | Different 64+ random chars |
-| `JWT_ACCESS_EXPIRES_IN` | e.g. `15m` |
-| `JWT_REFRESH_EXPIRES_IN` | e.g. `7d` |
-| `SMTP_*` | Nodemailer SMTP config |
-| `CLOUDINARY_*` | File upload |
-| `RAZORPAY_KEY_ID/SECRET` | Payment |
-| `RAZORPAY_WEBHOOK_SECRET` | Webhook HMAC |
-| `SLOT_LOCK_TTL_MS` | Redis lock TTL (default: 10000) |
-| `SLOT_LOCK_RETRY_COUNT` | Redlock retries (default: 3) |
-| `CORS_ORIGINS` | Comma-separated allowed origins |
+| `REDIS_HOST` / `REDIS_PORT` / `REDIS_PASSWORD` | Redis (slot holds, refresh tokens) |
+| `JWT_ACCESS_SECRET` / `JWT_REFRESH_SECRET` | Auth tokens |
+| `SMTP_HOST` / `SMTP_PORT` / `SMTP_USER` / `SMTP_PASS` / `EMAIL_FROM` | Outgoing email |
+| `ADMIN_EMAIL` | Where admin notification emails are sent (new bookings, contact form, forms uploaded, payment failures) |
+| `BACKEND_PUBLIC_URL` | Publicly reachable base URL of **this** backend — used to build absolute image URLs (e.g. logo) inside outgoing emails, since uploaded files are stored as relative `/uploads/...` paths |
+| `CLIENT_URL` | Frontend site URL — used in email links and CORS |
+| `GOOGLE_CLIENT_ID` | Google OAuth Client ID — required for "Sign in / up with Google" (**must be set**, see §5) |
+| `RAZORPAY_KEY_ID` / `RAZORPAY_KEY_SECRET` | Payments |
+| `CORS_ORIGINS` | Comma-separated allowed frontend origins |
+| `RATE_LIMIT_WINDOW_MS` / `RATE_LIMIT_MAX` | Global API rate limit (slot-check endpoints are exempted — see changelog) |
 
-### Frontend `.env.local`
+### `frontend/.env`
 
-| Key | Purpose |
-|-----|---------|
-| `NEXT_PUBLIC_API_URL` | Backend API base URL |
-| `NEXT_PUBLIC_SITE_URL` | Used for canonical + OG tags |
-| `NEXT_PUBLIC_THERAPIST_ID` | Srishti's MongoDB `_id` (from seed) |
-| `NEXT_PUBLIC_RAZORPAY_KEY_ID` | Public Razorpay key |
-
----
-
-## Database Schemas
-
-### User
-`_id · name · email (unique) · passwordHash · role (admin|therapist|user) · phone · avatar · isEmailVerified · isActive · preferredLanguage · meta(dob, gender, timezone) · timestamps`
-
-### Therapist
-`_id · user(ref User) · slug(unique) · title · bio · shortBio · specializations[] · approaches[] · languages[] · yearsExperience · certifications[] · consultationFee · defaultSlotDurationMin · bufferMin · timezone · isAcceptingClients · isFeatured · rating · seo · timestamps`
-
-### Availability (weekly template)
-`_id · therapist(ref) · dayOfWeek(0-6) · startTime · endTime · slotDurationMin · bufferMin · mode · isActive`
-
-### BlockedDate
-`_id · therapist(ref) · startAt · endAt · reason`
-
-### Slot (materialized)
-`_id · therapist(ref) · startAt · endAt · durationMin · mode · status(available|held|booked|blocked) · heldBy(ref User) · heldUntil · appointment(ref) · version`  
-**Unique index**: `(therapist, startAt)`
-
-### Appointment
-`_id · bookingCode(unique) · user(ref) · therapist(ref) · service(ref) · slot(ref, unique) · startAt · endAt · mode · status · intake · meeting · payment(ref) · cancellation · reschedule · remindersSent · timestamps`
-
-### Blog
-`_id · slug(unique) · title · excerpt · content · coverImage · author(ref) · tags[] · category · status · publishedAt · seo · views · timestamps`
-
-### Transaction
-`_id · user(ref) · appointment(ref) · provider · providerOrderId · providerPaymentId · amount · currency · status · refund · timestamps`
-
-### Others
-`Testimonial · Notification · SeoMetadata · Settings (key-value) · ContactMessage · Faq · AuditLog`
+| Variable | Purpose |
+|---|---|
+| `NEXT_PUBLIC_API_URL` | Backend API base, e.g. `https://api.example.com/api/v1` |
+| `NEXT_PUBLIC_SITE_URL` | This site's public URL |
+| `NEXT_PUBLIC_THERAPIST_ID` | Default therapist id used on the booking page |
+| `NEXT_PUBLIC_RAZORPAY_KEY_ID` | Razorpay public key |
+| `NEXT_PUBLIC_GOOGLE_CLIENT_ID` | Must match backend's `GOOGLE_CLIENT_ID` exactly |
 
 ---
 
-## API Route Reference
+## 4. Feature overview
 
-All routes prefixed `/api/v1`
+### Public site
+- Home (hero, services, therapist, testimonials) — hero images & logo are **admin-editable** (see §5)
+- Services listing + `/services/[slug]` detail pages — content, images, price, duration fully CMS-driven
+- Blog listing + detail (Jodit rich-text content)
+- Therapist profile, About, Contact (contact form emails the admin)
+- Booking flow: slot selection → hold → Razorpay payment → confirmation
+- Client dashboard: appointment list, appointment detail (upload intake/consent forms, cancel, reschedule)
 
 ### Auth
-| Method | Path | Auth | Description |
-|--------|------|------|-------------|
-| POST | `/auth/register` | - | Register + send verify email |
-| POST | `/auth/verify-email` | - | Verify email token |
-| POST | `/auth/login` | - | Login → access+refresh tokens |
-| POST | `/auth/refresh` | - | Rotate refresh token |
-| POST | `/auth/logout` | - | Revoke refresh token |
-| POST | `/auth/logout-all` | Bearer | Revoke all sessions |
-| POST | `/auth/forgot` | - | Send password reset email |
-| POST | `/auth/reset` | - | Set new password |
-| GET | `/auth/me` | Bearer | Current user |
+- Email/password register, login, forgot/reset password, email verification
+- **Google Sign-in/Sign-up** (Google Identity Services button — login page, register page, and the in-page auth modal)
 
-### Public
-| Method | Path | Auth | Description |
-|--------|------|------|-------------|
-| GET | `/therapists` | - | List therapists (filter: spec, lang, q) |
-| GET | `/therapists/:slug` | - | Therapist profile |
-| PUT | `/therapists/:id/availability` | therapist/admin | Set weekly schedule |
-| POST | `/therapists/:id/blocked-dates` | therapist/admin | Add blocked window |
-| POST | `/therapists/:id/generate-slots` | therapist/admin | Materialise slots |
-| GET | `/services` | - | List services |
-| GET | `/services/:slug` | - | Service detail |
-| GET | `/blogs` | - | Blog list (page, tag) |
-| GET | `/blogs/:slug` | - | Blog post (increments view) |
-| GET | `/testimonials` | - | Published testimonials |
-| GET | `/faqs` | - | FAQ list |
-| GET | `/seo/:pageKey` | - | Page SEO metadata |
-| POST | `/contact` | - | Submit contact form |
+### Admin panel (`/admin`)
+- Dashboard, Users (full profile + appointment history view), Therapists
+- Services — CRUD **with image upload** and a Jodit rich-text description editor
+- Appointments — full detail view (client info, intake, payment, meeting link, cancellation info), status transitions (confirm / reject / complete / no-show) with client emails, admin-editable notes/meeting link
+- Consent form review — approve or reject an uploaded consent form; rejection asks the client to re-upload and emails them why
+- Slots — generate from weekly availability, **block/unblock**
+- Blogs (Jodit editor + cover image), Testimonials, FAQs, SEO metadata
+- Settings — generic key/value store **plus** a dedicated "Logo & Homepage Hero" panel for uploading the site logo and hero slide images/text without touching code
+- Contact messages inbox
 
-### Bookings
-| Method | Path | Auth | Description |
-|--------|------|------|-------------|
-| GET | `/bookings/slots` | - | Available slots (therapistId, from, to) |
-| POST | `/bookings/slots/:id/hold` | Bearer | Hold slot (10s lock) |
-| DELETE | `/bookings/slots/:id/hold` | Bearer | Release hold |
-| POST | `/bookings` | Bearer | Book slot (atomic) |
-| GET | `/bookings/me` | Bearer | My appointments |
-| PATCH | `/bookings/:id/cancel` | Bearer | Cancel appointment |
-| PATCH | `/bookings/:id/reschedule` | Bearer | Reschedule to new slot |
-
-### Payments
-| Method | Path | Auth | Description |
-|--------|------|------|-------------|
-| POST | `/payments/order` | Bearer | Create Razorpay order |
-| POST | `/payments/verify` | Bearer | Verify payment signature |
-| POST | `/payments/webhook` | - | Razorpay webhook (HMAC) |
-
-### Admin (all require admin role)
-| Method | Path | Description |
-|--------|------|-------------|
-| GET | `/admin/dashboard` | Stats: users, appts, revenue, pending |
-| GET | `/admin/users` | List users (role, q, page) |
-| PATCH | `/admin/users/:id/toggle-active` | Enable/disable user |
-| POST | `/admin/therapists` | Create therapist profile |
-| PATCH | `/admin/therapists/:id` | Update therapist |
-| GET | `/admin/appointments` | All appointments (filters) |
-| POST/PATCH/DELETE | `/admin/services/:id` | Service CRUD |
-| POST/PATCH/DELETE | `/admin/blogs/:id` | Blog CMS |
-| CRUD | `/admin/testimonials` | Testimonials |
-| CRUD | `/admin/faqs` | FAQs |
-| CRUD | `/admin/seo` | SEO metadata per page |
-| GET/POST/PATCH | `/admin/settings` | Brand/theme/contact settings |
-| GET | `/admin/contact-messages` | Inbox |
+### Emails (all branded via the shared HTML template, pulling logo/contact details from Settings)
+- Client: email verification, password reset, booking confirmed, booking cancelled, booking rejected, booking completed, payment failed, consent approved, consent rejected (re-upload requested), 24h & 12h session reminders
+- Admin: new booking, payment failed, new contact-form message, intake form uploaded, consent form uploaded (needs approval), consent form **re-uploaded after rejection**
 
 ---
 
-## Booking Concurrency Strategy
+## 5. Post-deploy checklist
 
-**Problem**: Two users book same slot simultaneously.
-
-**Solution** (4 layers):
-
-```
-Request
-  │
-  ▼
-① Rate limiter (20 req/min/IP)
-  │
-  ▼
-② Redis Redlock distributed lock
-   lock:slot:<slotId>  TTL 5-6s
-   retries: 3 × 200ms jitter
-  │
-  ▼
-③ MongoDB atomic findOneAndUpdate
-   filter: { status: { $in: ['available', expired-hold] } }
-   update: { status: 'booked', $inc: { version: 1 } }
-   → only ONE writer succeeds; others get null → throw 409
-  │
-  ▼
-④ MongoDB transaction (session)
-   Slot update + Appointment create = atomic
-   Unique index (therapist, startAt) = last safety net
-  │
-  ▼
-⑤ Return appointment or throw "Slot not available"
-```
-
-**Hold flow** (payment gateway window):
-```
-1. POST /bookings/slots/:id/hold
-   → Redlock acquire
-   → Slot.status = 'held', heldUntil = now + 10s
-   → Redis key: hold:slot:<id> = userId, PX 10000
-2. User completes payment form
-3. POST /bookings  (or payment verify webhook)
-   → Redlock acquire again
-   → Accept if held-by-me OR available OR hold-expired
-4. Cron every 30s: sweep slots where heldUntil < now → reset to available
-```
+1. **Google Sign-in** — create an OAuth 2.0 Client ID (type: Web application) in Google
+   Cloud Console, add your frontend domain(s) under "Authorized JavaScript origins",
+   then set the same value in both `backend/.env` (`GOOGLE_CLIENT_ID`) and
+   `frontend/.env` (`NEXT_PUBLIC_GOOGLE_CLIENT_ID`). The button auto-hides on the
+   frontend until this is configured.
+2. **Logo & hero images** — Admin → Settings → Brand tab → "Logo & Homepage Hero".
+   Upload the logo and up to two hero slide images/captions; changes go live
+   immediately, no deploy needed.
+3. **Email branding** — Admin → Settings → add `brand.name`, `brand.contactEmail`,
+   `brand.contactPhone`, `brand.address`, `brand.color` (group `brand`) to customise
+   outgoing email branding/footer. Falls back to sensible defaults if left unset.
+4. Set `ADMIN_EMAIL` and `BACKEND_PUBLIC_URL` in `backend/.env`.
+5. `npm install` in both `frontend/` and `backend/` (not included in this delivery).
 
 ---
 
-## Redis Strategy
+## 6. Changelog — this update
 
-| Key Pattern | TTL | Purpose |
-|-------------|-----|---------|
-| `refresh:<userId>:<jti>` | 7d | Track valid refresh tokens |
-| `lock:slot:<slotId>` | 5-6s | Redlock mutex per slot |
-| `hold:slot:<slotId>` | 10s | User hold marker |
-| `cache:slots:<therapistId>:<date>` | 60s | Slot list cache (add if needed) |
-| `session:<userId>` | 15m | Optional session store |
-
----
-
-## Deployment Guide
-
-### Option A: Managed (recommended for solo practitioner)
-
-| Component | Service | Cost |
-|-----------|---------|------|
-| Next.js frontend | Vercel (free → Pro) | ~$0-20/mo |
-| Node backend | Railway or Render | ~$5-15/mo |
-| MongoDB | MongoDB Atlas M0 free / M10 | $0-57/mo |
-| Redis | Upstash (serverless) | ~$0-10/mo |
-| Email | Gmail App Password or Resend | $0-10/mo |
-| Images | Cloudinary free tier | $0 |
-| Domain | awakenwithsrishti.com | ~$10/yr |
-
-**Vercel** (frontend):
-```bash
-npm i -g vercel
-vercel --prod
-# Set env vars in Vercel dashboard
-```
-
-**Railway** (backend):
-```bash
-railway login
-railway up
-# Set env vars in Railway dashboard
-railway domain   # get your backend URL
-```
-
-### Option B: Docker on VPS (DigitalOcean / Hetzner)
-
-```bash
-# On server:
-git clone <repo>
-cd srishti-platform
-cp backend/.env.example backend/.env
-# Fill backend/.env
-docker-compose up -d --build
-
-# Nginx reverse proxy:
-# frontend -> localhost:3000
-# backend -> localhost:5000/api
-```
-
-### Production Nginx config
-
-```nginx
-server {
-  server_name awakenwithsrishti.com;
-  location / { proxy_pass http://localhost:3000; proxy_set_header Host $host; }
-  location /api { proxy_pass http://localhost:5000; proxy_set_header Host $host; }
-}
-```
-
-Run `certbot --nginx -d awakenwithsrishti.com` for TLS.
-
----
-
-## Security Checklist
-
-- [x] Helmet (XSS, CSP, HSTS headers)
-- [x] CORS allowlist (specific origins only)
-- [x] MongoDB sanitize (NoSQL injection prevention)
-- [x] XSS-clean (request body sanitization)
-- [x] HPP (HTTP parameter pollution)
-- [x] Rate limiting (global + stricter on auth + booking)
-- [x] JWT access tokens (15m) + refresh rotation
-- [x] Refresh token JTI stored in Redis (revocable)
-- [x] Bcrypt password hashing (rounds=12)
-- [x] Zod input validation on all endpoints
-- [x] Role-based access control middleware
-- [x] Redlock distributed slot locking
-- [x] MongoDB transactions (atomic booking)
-- [x] Unique compound index (therapist, startAt)
-- [x] Razorpay HMAC webhook signature verification
-- [x] Secure Next.js headers (X-Frame-Options DENY, nosniff)
-- [x] Admin routes behind role middleware
-- [x] Audit log for all admin actions
-- [x] `robots.txt` blocks /admin, /dashboard, /api
-- [ ] Add CAPTCHA to contact form (recommended: Cloudflare Turnstile)
-- [ ] Set MongoDB auth user (not default)
-- [ ] Redis AUTH password in production
-- [ ] Enable MongoDB Atlas IP allowlist
-- [ ] DKIM/SPF for email domain
-- [ ] Enable 2FA on Razorpay dashboard
-
----
-
-## Implementation Phases
-
-### Phase 1 — Core infrastructure ✅
-- Backend server, Express app, middleware stack
-- MongoDB + Redis connections
-- Logger, error handler, env config
-
-### Phase 2 — Database + Auth ✅
-- All Mongoose schemas
-- JWT auth with refresh rotation
-- Email verification + password reset
-- RBAC middleware
-
-### Phase 3 — Booking Engine ✅
-- Slot generation from availability templates
-- Redlock + Mongo transaction booking flow
-- Hold / release / sweep expired holds
-- Cancel + reschedule with slot swap
-
-### Phase 4 — Admin APIs + Content ✅
-- Dashboard analytics
-- User/therapist management
-- Services, Blog, Testimonials, FAQ, SEO, Settings CRUD
-- Contact message inbox + audit log
-
-### Phase 5 — Frontend (Next.js) ✅
-- Root layout, brand design system, Tailwind
-- Homepage with hero, services, testimonials, FAQ, CTA
-- About, Services, Contact, Blog pages
-- Multi-step booking flow with slot picker
-- Auth pages (login, register)
-- User dashboard + appointments
-- Admin panel shell
-- Sitemap, robots.txt, JSON-LD schema, OG tags
-
-### Phase 6 — Payments (Razorpay)
-- Connect Razorpay order creation to booking flow
-- Payment verify → confirm appointment
-- Webhook handler for async payment events
-- Refund handling on cancellation
-
-### Phase 7 — Polish + Launch
-- Add Cloudinary upload to admin for images
-- Blog rich-text editor (TipTap or Quill)
-- WhatsApp business link in booking confirmation
-- Google Calendar / Zoom integration for meeting URLs
-- E2E tests (Playwright)
-- Performance audit (Lighthouse ≥ 90)
-- CAPTCHA on contact form
-
----
-
-## Default Credentials (seed)
-
-| Role | Email | Password |
-|------|-------|----------|
-| Admin | admin@awakenwithsrishti.com | `ChangeMe@123` |
-| Therapist (Srishti) | roysrishti010@gmail.com | `ChangeMe@123` |
-
-**Change both passwords immediately after first login.**
-
----
-
-## Contact & Branding
-
-| Asset | Value |
-|-------|-------|
-| Brand name | Srishti Roy — Counselling Psychologist |
-| Tagline | Healing through awareness, reflection, and self-understanding |
-| Email | contact@awakentherapy.in |
-| WhatsApp | +1 647 500 8349 |
-| India phone | +91 8448 009 694 |
-| Instagram | @awakenwithsrishti |
-| Website | awakenwithsrishti.com |
-
----
-
-*Built with care for Srishti Roy Counselling. Enterprise architecture, human purpose.*
+- **Auth:** Added Google Sign-in/Sign-up (`POST /auth/google`, GIS button component wired into login, register, and the auth modal). New `User.googleId` / `authProvider` fields; existing email accounts auto-link on first Google sign-in.
+- **Branding:** Site logo and homepage hero slides are now backend/admin driven (`Settings`, group `brand`) instead of hardcoded images.
+- **Services:** Admin can now upload a cover image and write the description with the Jodit rich-text editor (previously a plain textarea); public service pages render it as HTML.
+- **Appointments (admin):** Full detail view — intake, payment, meeting link, cancellation info; Confirm/Reject/Complete/No-show now actually persist (previously the Confirm button only changed local UI state and didn't call the API); consent form approve/reject workflow with client email + re-upload flow; admin can edit meeting link and notes.
+- **Users (admin):** "View" now opens full profile + appointment/transaction history (`GET /admin/users/:id`).
+- **Slots:** Fixed missing "Unblock" button (block/unblock toggle endpoint existed but the UI never showed it); admin slot routes are now properly auth-protected (were previously public).
+- **Uploads (client dashboard → appointment detail):** Fixed intake/consent upload — was silently failing (JSON body sent instead of multipart, wrong field name, and the backend was comparing the wrong values). Added `Transaction.consentForm` field so the consent file is tracked separately from `intakeForm`. Preview/"View file" links added; rejected consent forms show the reason and allow re-upload.
+- **Emails:** Full redesign — one shared branded HTML layout (logo, accent colour, footer with contact details, all pulled from `Settings`) used by every template; added `bookingRejected`, `bookingCompleted`, `bookingFailed`, `reminder12h`, `consentApproved`, `consentRejected`, `adminNewBooking`, `adminPaymentFailed`, `adminContactMessage`, `adminIntakeFormUploaded`, `adminConsentFormUploaded`, `adminConsentReuploaded`. Also fixed: booking-confirmed email was never actually sent (the call was commented out), blog creation crashed on save (missing `slugify` import), contact form didn't notify the admin.
+- **Reminders:** Added a 12-hour-before reminder job alongside the existing 24-hour one.
+- **Rate limiting:** Slot availability checking (`/bookings/slots`, `/bookings/check-slot`, `/bookings/admin/slots`) is now exempt from the global API rate limiter, since the calendar UI polls it frequently.

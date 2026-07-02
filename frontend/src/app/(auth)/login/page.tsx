@@ -6,6 +6,7 @@ import { Loader2, Eye, EyeOff, ArrowRight, Sparkles } from 'lucide-react';
 import { authApi } from '@/lib/api';
 import { useAuthStore } from '@/store/auth.store';
 import { toast } from '@/components/ui/Toaster';
+import GoogleAuthButton from '@/components/auth/GoogleAuthButton';
 
 function LoginContent() {
 const { setAuth } = useAuthStore();
@@ -180,6 +181,10 @@ const { setAuth } = useAuthStore();
               <div className="h-px flex-1 bg-[#E2D9F3]" />
               <span className="text-[11px] text-[#B0A4CC] uppercase tracking-wider">or</span>
               <div className="h-px flex-1 bg-[#E2D9F3]" />
+            </div>
+
+            <div className="anim-up anim-d5 mb-8">
+              <GoogleAuthButton next={next} label="signin" />
             </div>
 
             <p className="anim-up anim-d5 text-center text-sm text-[#8B7FA8]">

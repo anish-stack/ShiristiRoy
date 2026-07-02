@@ -6,6 +6,21 @@ export const rateLimiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
   message: { success: false, message: 'Too many requests, try later' },
+  // Slot availability checking (calendar UI polls this a lot) should never
+  // get rate-limited by the global limiter.
+  skip: (req) => {
+    const p = req.path || req.originalUrl || '';
+    return (
+      p.endsWith('/bookings/slots') ||
+      p.endsWith('/bookings/me') ||
+  
+
+      p.includes('/bookings/slots?') ||
+      p.endsWith('/bookings/check-slot') ||
+      p.endsWith('/bookings/admin/slots') ||
+      p.includes('/bookings/admin/slots?')
+    );
+  },
 });
 
 export const authLimiter = rateLimit({

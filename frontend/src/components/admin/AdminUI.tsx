@@ -140,13 +140,26 @@ export function Btn({ onClick, variant = 'default', size = 'md', disabled, loadi
 }
 
 /* ── Modal ──────────────────────────────────────── */
-export function Modal({ open, onClose, title, children, footer }: {
+const modalSizes = {
+  xs: 'max-w-xs',
+  sm: 'max-w-sm',
+  md: 'max-w-md',
+  lg: 'max-w-lg',
+  xl: 'max-w-xl',
+  '2xl': 'max-w-2xl',
+  '3xl': 'max-w-3xl',
+  '4xl': 'max-w-4xl',
+  full: 'max-w-[95vw]',
+};
+
+export function Modal({ open, onClose, title, children, footer, size = 'lg' }: {
   open: boolean; onClose: () => void; title: string; children: React.ReactNode; footer?: React.ReactNode;
+  size?: keyof typeof modalSizes;
 }) {
   if (!open) return null;
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm p-4" onClick={onClose}>
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg max-h-[90vh] flex flex-col" onClick={(e) => e.stopPropagation()}>
+      <div className={cn('bg-white rounded-2xl shadow-xl w-full max-h-[90vh] flex flex-col', modalSizes[size])} onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center justify-between px-6 py-4 border-b border-brand-lavender/10">
           <h2 className="font-serif text-lg text-brand-ink">{title}</h2>
           <button onClick={onClose} className="text-brand-ink/30 hover:text-brand-ink"><X size={18} /></button>
@@ -175,7 +188,7 @@ export function ConfirmDelete({ open, onClose, onConfirm, label }: {
   open: boolean; onClose: () => void; onConfirm: () => void; label: string;
 }) {
   return (
-    <Modal open={open} onClose={onClose} title="Confirm delete"
+    <Modal open={open} onClose={onClose} title="Confirm delete" size="sm"
       footer={<><Btn variant="default" onClick={onClose}>Cancel</Btn><Btn variant="danger" onClick={() => { onConfirm(); onClose(); }}>Delete</Btn></>}>
       <p className="text-sm text-brand-ink/70">Delete <strong>{label}</strong>? This cannot be undone.</p>
     </Modal>

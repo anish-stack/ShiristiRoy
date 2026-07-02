@@ -9,6 +9,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { authApi } from '@/lib/api';
 import { toast } from '@/components/ui/Toaster';
 import { useAuthStore } from '@/store/auth.store';
+import GoogleAuthButton from '@/components/auth/GoogleAuthButton';
 
 type AuthMode = 'login' | 'register';
 
@@ -236,6 +237,21 @@ export default function AuthModalContent({
                         </form>
                     )}
 
+                    {mode === 'login' && (
+                        <div className="mt-4 flex flex-col items-center gap-3">
+                            <div className="flex items-center gap-3 w-full">
+                                <div className="h-px flex-1 bg-brand-lavender/15" />
+                                <span className="text-[11px] text-brand-ink/40 uppercase tracking-wider">or</span>
+                                <div className="h-px flex-1 bg-brand-lavender/15" />
+                            </div>
+                            <GoogleAuthButton
+                                next={next}
+                                label="signin"
+                                onSuccess={() => { onClose(); onSuccess?.(); router.push(next); }}
+                            />
+                        </div>
+                    )}
+
                     {/* REGISTER */}
                     {mode === 'register' && (
                         <form
@@ -328,6 +344,21 @@ export default function AuthModalContent({
                                 )}
                             </button>
                         </form>
+                    )}
+
+                    {mode === 'register' && (
+                        <div className="mt-4 flex flex-col items-center gap-3">
+                            <div className="flex items-center gap-3 w-full">
+                                <div className="h-px flex-1 bg-brand-lavender/15" />
+                                <span className="text-[11px] text-brand-ink/40 uppercase tracking-wider">or</span>
+                                <div className="h-px flex-1 bg-brand-lavender/15" />
+                            </div>
+                            <GoogleAuthButton
+                                next={next}
+                                label="signup"
+                                onSuccess={() => { onClose(); onSuccess?.(); router.push(next); }}
+                            />
+                        </div>
                     )}
                 </div>
             </div>

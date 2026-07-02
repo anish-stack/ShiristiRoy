@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { ArrowRight, Clock } from 'lucide-react';
 import { blogApi } from '@/lib/api';
 import { buildMetadata } from '@/lib/seo';
-import { formatDate } from '@/lib/utils';
+import { formatDate, resolveMediaUrl } from '@/lib/utils';
 
 export const metadata: Metadata = buildMetadata({
   title: 'Blog — Reflections on Healing',
@@ -39,7 +39,7 @@ export default async function BlogPage() {
                 <Link key={b._id} href={`/blog/${b.slug}`} className="card-soft group hover:shadow-md hover:border-brand-lavender/25 transition-all duration-300 grid sm:grid-cols-4 gap-6 items-start">
                   {b.coverImage?.url && (
                     <div className="sm:col-span-1 aspect-video sm:aspect-square rounded-xl overflow-hidden bg-brand-lavender/10">
-                      <img src={b.coverImage.url} alt={b.coverImage.alt || b.title} className="w-full h-full object-cover" />
+                      <img src={resolveMediaUrl(b.coverImage.url)} alt={b.coverImage.alt || b.title} className="w-full h-full object-cover" />
                     </div>
                   )}
                   <div className={b.coverImage?.url ? 'sm:col-span-3' : 'sm:col-span-4'}>

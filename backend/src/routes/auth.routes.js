@@ -9,6 +9,7 @@ const r = Router();
 r.post('/register', authLimiter, validate(authSchemas.register), c.register);
 r.post('/verify-email', validate(authSchemas.verifyEmail), c.verifyEmail);
 r.post('/login', authLimiter, validate(authSchemas.login), c.login);
+r.post('/google', authLimiter, c.google);
 r.post('/refresh', validate(authSchemas.refresh), c.refresh);
 r.post('/logout', validate(authSchemas.refresh), c.logout);
 r.post('/logout-all', authenticate(), c.logoutAll);

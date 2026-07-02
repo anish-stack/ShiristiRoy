@@ -3,6 +3,7 @@ import * as slotSvc from '../services/slot.service.js';
 import Appointment from '../models/Appointment.js';
 import { asyncHandler, fail, ok } from '../utils/apiError.js';
 import { Slot } from '../models/Slot.js';
+import { sendEmail, templates } from '../services/email.service.js';
 
 export const listAvailableSlots = asyncHandler(async (req, res) => {
   const { therapistId, from, to, mode, service } = req.query;
@@ -66,16 +67,20 @@ export const releaseHold = asyncHandler(async (req, res) => {
 // POST /bookings/initiate-payment
 // body: { slotId, serviceId, mode, amount, intake }
 export const initiatePayment = asyncHandler(async (req, res) => {
-  const { slotId, serviceId, mode, amount, intake } = req.body;
-  const result = await bookingSvc.initiatePayment({
-    userId: req.user.id,
-    slotId,
-    serviceId,
-    mode,
-    amount,
-    intake,
-  });
-  ok(res, result, 'Payment initiated', 201);
+  try {
+    const { slotId, serviceId, mode, amount, intake } = req.body;
+    const result = await bookingSvc.initiatePayment({
+      userId: req.user.id,
+      slotId,
+      serviceId,
+      mode,
+      amount,
+      intake,
+    });
+    ok(res, result, 'Payment initiated', 201);
+  } catch (err) {
+    console.error(err)
+  }
 });
 
 // Step 2: verify Razorpay payment + confirm booking
@@ -103,51 +108,75 @@ export const myAppointments = asyncHandler(async (req, res) => {
   ok(res, list);
 });
 
+
 export const uploadForms = asyncHandler(async (req, res) => {
-  const files = req.uploadedFile || [];
-  console.log(req.uploadedFiles)
+  const uploaded = req.uploadedFile || null; // { publicId, publicPath, fileName, mimeType }
+  const type = req.body?.type; // 'intake' | 'consent'
+
   const appointment = await Appointment.findOne({
     _id: req.params.id,
     user: req.user.id,
-  }).populate('payment');
+  }).populate('payment').populate('user', 'name email');
 
   if (!appointment) {
     return fail(res, "Appointment not found", 404);
   }
 
   const payment = appointment.payment;
-
-  // ❌ already uploaded check
-  if (payment?.intakeForm && payment?.consentDone) {
-    return fail(res, "Already Uploaded Intake and Consent Form", 403);
+  if (!payment) {
+    return fail(res, "No payment record for this appointment", 404);
   }
 
-  // 🔥 find uploaded files
-  const intakeFile = files.fileName ==="intake"
-
-  const consentFile = files.fileName === "consent"
-
-
-  // ❌ validation
-  if (!intakeFile && !payment?.intakeForm) {
-    return fail(res, "Intake form missing", 400);
+  if (!uploaded) {
+    return fail(res, "No file uploaded", 400);
+  }
+  if (!['intake', 'consent'].includes(type)) {
+    return fail(res, "Missing/invalid 'type' — must be 'intake' or 'consent'", 400);
   }
 
-  if (!consentFile && !payment?.consentDone) {
-    return fail(res, "Consent form missing", 400);
-  }
+  const wasRejected = payment.consentStatus === 'rejected';
+  const previousReason = payment.consentRejectReason;
 
-  // ✅ update payment
-  payment.intakeForm = intakeFile?.publicPath || payment.intakeForm;
-  payment.consentDone = consentFile ? true : payment.consentDone;
+  if (type === 'intake') {
+    payment.intakeForm = uploaded.publicPath;
+  } else {
+    // consent form file — stored the same way as intake (URL string).
+    // consentDone/consentStatus track admin review of that file.
+    payment.consentForm = uploaded.publicPath;
+    payment.consentDone = true;
+    payment.consentStatus = 'pending'; // needs admin review after (re)upload
+    payment.consentRejectReason = undefined;
+  }
 
   await payment.save();
 
+  // Let admin know a form is waiting on their review.
+  if (process.env.ADMIN_EMAIL) {
+    const reviewUrl = process.env.CLIENT_URL ? `${process.env.CLIENT_URL}/admin/appointments` : undefined;
+    const mailData = {
+      userName: appointment.user?.name || 'A client',
+      userEmail: appointment.user?.email || '—',
+      bookingCode: appointment.bookingCode,
+      startAt: appointment.startAt?.toString(),
+      reviewUrl,
+    };
+    const mail = type === 'intake'
+      ? templates.adminIntakeFormUploaded(mailData)
+      : (wasRejected
+        ? templates.adminConsentReuploaded({ ...mailData, previousReason })
+        : templates.adminConsentFormUploaded(mailData));
+    await sendEmail({ to: process.env.ADMIN_EMAIL, ...mail }).catch(() => { });
+  }
+
   return ok(res, {
     intakeForm: payment.intakeForm,
+    consentForm: payment.consentForm,
     consentDone: payment.consentDone,
+    consentStatus: payment.consentStatus,
+    uploadedUrl: uploaded.publicPath,
   }, "Forms uploaded successfully");
 });
+
 
 export const singleAppointMent = asyncHandler(async (req, res) => {
 

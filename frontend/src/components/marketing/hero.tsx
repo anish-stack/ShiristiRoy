@@ -8,8 +8,11 @@ import { motion, AnimatePresence } from "framer-motion"
 
 import indiualsCouncil from "@/assets/indiuals_counsel.png"
 import familyCouncil from "@/assets/family_counsil.png"
+import { publicApi } from "@/lib/api"
 
-const slides = [
+const API_ORIGIN = (process.env.NEXT_PUBLIC_API_URL ?? '').replace(/\/api\/v1\/?$/, '')
+
+const defaultSlides = [
     {
         image: indiualsCouncil,
         title: "Individual Counselling",
@@ -24,6 +27,25 @@ const slides = [
 
 const Hero = () => {
     const [current, setCurrent] = useState(0)
+    const [slides, setSlides] = useState<{ image: any; title: string; desc: string }[]>(defaultSlides)
+
+    useEffect(() => {
+        publicApi.brandSettings()
+            .then((s) => {
+                const remote = s?.['brand.heroSlides']
+                if (Array.isArray(remote) && remote.length) {
+                    const mapped = remote
+                        .filter((sl: any) => sl?.image?.url)
+                        .map((sl: any, i: number) => ({
+                            image: sl.image.url.startsWith('http') ? sl.image.url : `${API_ORIGIN}${sl.image.url}`,
+                            title: sl.title || defaultSlides[i]?.title || '',
+                            desc: sl.desc || defaultSlides[i]?.desc || '',
+                        }))
+                    if (mapped.length) setSlides(mapped)
+                }
+            })
+            .catch(() => {})
+    }, [])
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -31,7 +53,7 @@ const Hero = () => {
         }, 4000)
 
         return () => clearInterval(interval)
-    }, [])
+    }, [slides.length])
 
     return (
         <section className="relative min-h-screen flex items-center overflow-hidden bg-gradient-to-br from-brand-ivory via-[#EDE8F8] to-[#E8EFF7]">

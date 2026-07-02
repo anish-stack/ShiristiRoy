@@ -17,6 +17,7 @@ import AuthModal from './AuthModal';
 import TherapistCard from './TherapistCard';
 import { useAuthStore } from '@/store/auth.store';
 import { useRouter } from 'next/navigation';
+import { resolveMediaUrl } from '@/lib/utils';
 
 interface Service {
     _id: string;
@@ -173,7 +174,7 @@ const ServiceDetails = ({
 
                             <div className="relative overflow-hidden rounded-[42px] border border-white/60 shadow-[0_30px_80px_rgba(115,131,158,0.18)]">
                                 <Image
-                                    src={service.coverImage.url}
+                                    src={resolveMediaUrl(service.coverImage.url)}
                                     alt={service.name}
                                     width={1000}
                                     height={800}
@@ -228,9 +229,10 @@ const ServiceDetails = ({
                                 Professional Guidance
                             </h2>
 
-                            <p className="mt-8 text-[#697786] leading-8 text-lg">
-                                {service.description}
-                            </p>
+                            <div
+                                className="mt-8 text-[#697786] leading-8 text-lg prose prose-p:my-3 prose-headings:text-[#4A5968] max-w-none"
+                                dangerouslySetInnerHTML={{ __html: service.description || '' }}
+                            />
 
                             <div className="grid md:grid-cols-2 gap-5 mt-10">
                                 {[

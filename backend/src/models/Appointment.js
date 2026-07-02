@@ -29,7 +29,7 @@ const appointmentSchema = new mongoose.Schema({
   payment: { type: mongoose.Schema.Types.ObjectId, ref: 'Transaction' },
   cancellation: { at: Date, by: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }, reason: String, refundEligible: Boolean },
   reschedule: { previousSlot: { type: mongoose.Schema.Types.ObjectId, ref: 'Slot' }, at: Date },
-  remindersSent: { tMinus24h: Boolean, tMinus1h: Boolean },
+  remindersSent: { tMinus24h: Boolean, tMinus12h: Boolean, tMinus1h: Boolean },
 }, { timestamps: true });
 
 appointmentSchema.index({ user: 1, status: 1, startAt: -1 });

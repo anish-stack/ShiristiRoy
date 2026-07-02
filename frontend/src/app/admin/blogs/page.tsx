@@ -41,9 +41,9 @@ export default function BlogPage() {
       // admin sees all statuses — query admin blogs endpoint
       const p = new URLSearchParams({ page: String(page), limit: '15' });
       if (search) p.set('q', search);
-      const data = await api.get<{ items: Blog[]; total: number }>(`/admin/blogs?${p}`);
-      setList(data.items ?? []);
-      setTotal(data.total ?? 0);
+      const data = await api.get<Blog[]>(`/admin/blogs?${p}`);
+      setList(data);
+      setTotal(data.length);
     } catch {
       // fallback: hit public endpoint (only published)
       try {
@@ -100,7 +100,7 @@ export default function BlogPage() {
 
   return (
     <AdminPage title="Blog" subtitle={`${total} posts`}
-      actions={<Btn variant="primary" onClick={openCreate}><Plus size={14} />New post</Btn>}>
+      actions={<Btn variant="ghost" onClick={openCreate}><Plus size={14} />New post</Btn>}>
       <Card>
         <CardHeader title="All posts" actions={
           <div className="flex items-center gap-2">
@@ -138,7 +138,7 @@ export default function BlogPage() {
               {b.publishedAt ? formatDate(b.publishedAt, { day: 'numeric', month: 'short' }) : '—'}
             </span>,
             <div key="ac" className="flex gap-1">
-              <Btn size="sm" variant={b.status === 'published' ? 'default' : 'primary'} onClick={() => toggleStatus(b)}>
+              <Btn size="sm" variant={b.status === 'published' ? 'default' : 'ghost'} onClick={() => toggleStatus(b)}>
                 {b.status === 'published' ? 'Unpublish' : 'Publish'}
               </Btn>
               <Btn size="sm" variant="ghost" onClick={() => openEdit(b)}><Pencil size={13} /></Btn>
@@ -150,7 +150,7 @@ export default function BlogPage() {
       </Card>
 
       <Modal open={open} onClose={() => setOpen(false)} title={editing ? 'Edit post' : 'New post'}
-        footer={<><Btn variant="default" onClick={() => setOpen(false)}>Cancel</Btn><Btn variant="primary" onClick={save}>Save</Btn></>}>
+        footer={<><Btn variant="default" onClick={() => setOpen(false)}>Cancel</Btn><Btn variant="ghost" onClick={save}>Save</Btn></>}>
         <div className="space-y-4">
           <Field label="Title" required>
             <input className={inputCls} value={form.title} onChange={f('title')} placeholder="Post title" />

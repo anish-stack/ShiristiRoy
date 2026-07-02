@@ -64,28 +64,56 @@ async function _initiateRzRefund({ providerPaymentId, amount, notes = {} }) {
  */
 export async function holdSlot({ slotId, userId, ttlMs = HOLD_TTL_MS }) {
   let lock;
+
   try {
-    lock = await redlock.acquire([lockKey(slotId)], 5_000);
-    const holdUntil = new Date(Date.now() + ttlMs);
-    const updated = await Slot.findOneAndUpdate(
-      {
-        _id: slotId,
-        $or: [
-          { status: SlotStatus.AVAILABLE },
-          { status: SlotStatus.HELD, heldUntil: { $lt: new Date() } },
-        ],
-      },
-      {
-        $set: { status: SlotStatus.HELD, heldBy: userId, heldUntil: holdUntil },
-        $inc: { version: 1 },
-      },
-      { new: true },
+    lock = await redlock.acquire([lockKey(slotId)], 5000);
+
+    // 1. Check Redis
+    const redisHold = await redis.get(holdKey(slotId));
+
+    if (redisHold && redisHold !== userId.toString()) {
+      throw new ApiError(409, "Slot is already held by another user.");
+    }
+
+    
+    // 2. Check MongoDB
+    const slot = await Slot.findById(slotId);
+
+    if (!slot) {
+      throw new ApiError(404, "Slot not found");
+    }
+
+    const now = new Date();
+
+    const canHold =
+      slot.status === SlotStatus.AVAILABLE ||
+      (slot.status === SlotStatus.HELD && slot.heldUntil < now);
+
+    if (!canHold) {
+      throw new ApiError(409, "Slot not available");
+    }
+
+    // 3. Update MongoDB
+    slot.status = SlotStatus.HELD;
+    slot.heldBy = userId;
+    slot.heldUntil = new Date(Date.now() + ttlMs);
+    slot.version += 1;
+
+    await slot.save();
+
+    // 4. Update Redis
+    await redis.set(
+      holdKey(slotId),
+      userId.toString(),
+      "PX",
+      ttlMs
     );
-    if (!updated) throw new ApiError(409, 'Slot not available');
-    await redis.set(holdKey(slotId), userId.toString(), 'PX', ttlMs);
-    return updated;
+
+    return slot;
   } finally {
-    if (lock) await lock.release().catch(() => { });
+    if (lock) {
+      await lock.release().catch(() => {});
+    }
   }
 }
 
@@ -114,7 +142,7 @@ export async function releaseHold({ slotId, userId }) {
  */
 export async function initiatePayment({ userId, slotId, serviceId, mode, amount, intake = {} }) {
   // hold slot first — 409 if unavailable
-  await holdSlot({ slotId, userId });
+  // await holdSlot({ slotId, userId });
 
   // fetch slot for startAt/endAt/therapist
   const slot = await Slot.findById(slotId).lean();
@@ -183,6 +211,13 @@ export async function confirmPayment({ userId, slotId, txnId, paymentId, signatu
     await txn.save();
     // release hold on failed payment
     await releaseHold({ slotId, userId }).catch(() => { });
+    const failedUser = await User.findById(userId).catch(() => null);
+    if (failedUser?.email) {
+      await sendEmail({ to: failedUser.email, ...templates.bookingFailed({ reason: 'signature verification failed' }) }).catch(() => {});
+    }
+    if (process.env.ADMIN_EMAIL) {
+      await sendEmail({ to: process.env.ADMIN_EMAIL, ...templates.adminPaymentFailed({ userEmail: failedUser?.email || userId, reason: 'signature verification failed' }) }).catch(() => {});
+    }
     throw new ApiError(400, 'Payment verification failed');
   }
 
@@ -262,7 +297,7 @@ async function _confirmBooking({ userId, slotId, txnId }) {
     }
 
     await redis.del(holdKey(slotId));
-    // await _afterBook(appointment).catch((e) => logger.error('after-book err', e));
+    await _afterBook(appointment).catch((e) => logger.error('after-book err', e));
     return appointment;
   } finally {
     if (lock) await lock.release().catch(() => { });
@@ -493,5 +528,18 @@ async function _afterBook(appointment) {
         meetingUrl: appointment.meeting?.url,
       }),
     });
+  }
+
+  if (process.env.ADMIN_EMAIL) {
+    await sendEmail({
+      to: process.env.ADMIN_EMAIL,
+      ...templates.adminNewBooking({
+        userName: user?.name || 'Client',
+        userEmail: user?.email || '—',
+        therapistName: therapist?.user?.name || 'Srishti Roy',
+        startAt: appointment.startAt.toString(),
+        bookingCode: appointment.bookingCode,
+      }),
+    }).catch(() => {});
   }
 }

@@ -63,67 +63,97 @@ export const upload = multer({
 export const singleImageUpload = (
   fieldName = 'image'
 ) => [
-  upload.single(fieldName),
+    upload.single(fieldName),
 
-  async (req, res, next) => {
-    try {
-      if (!req.file) {
-        return res.status(400).json({
+    async (req, res, next) => {
+      try {
+        if (!req.file) {
+          return res.status(400).json({
+            success: false,
+            message: 'No image uploaded',
+          });
+        }
+
+        const publicId =
+          crypto.randomUUID();
+
+        const fileName = `${publicId}.webp`;
+
+        const outputPath = path.join(
+          UPLOAD_DIR,
+          fileName
+        );
+
+        // Compress + convert image
+        await sharp(req.file.buffer)
+          .resize({
+            width: 1600,
+            withoutEnlargement: true,
+          })
+          .webp({
+            quality: 80,
+          })
+          .toFile(outputPath);
+
+        // Public path
+        const publicPath = `/uploads/${fileName}`;
+
+        // Attach uploaded file info
+        req.uploadedFile = {
+          publicId,
+
+          actualPath: outputPath,
+
+          publicPath,
+
+          fileName,
+
+          mimeType: 'image/webp',
+        };
+
+        next();
+      } catch (error) {
+        console.error(
+          'Image upload error:',
+          error
+        );
+
+        return res.status(500).json({
           success: false,
-          message: 'No image uploaded',
+          message:
+            error.message ||
+            'Failed to process image',
         });
       }
+    },
+  ];
 
-      const publicId =
-        crypto.randomUUID();
-
+// Like singleImageUpload, but does NOT error when no file is sent — lets the
+// same route accept either multipart (with a new image) or plain JSON
+// (editing other fields only, e.g. toggling isActive).
+export const optionalImageUpload = (fieldName = 'image') => [
+  upload.single(fieldName),
+  async (req, res, next) => {
+    if (!req.file) return next();
+    try {
+      const publicId = crypto.randomUUID();
       const fileName = `${publicId}.webp`;
-
-      const outputPath = path.join(
-        UPLOAD_DIR,
-        fileName
-      );
-
-      // Compress + convert image
+      const outputPath = path.join(UPLOAD_DIR, fileName);
       await sharp(req.file.buffer)
-        .resize({
-          width: 1600,
-          withoutEnlargement: true,
-        })
-        .webp({
-          quality: 80,
-        })
+        .resize({ width: 1600, withoutEnlargement: true })
+        .webp({ quality: 80 })
         .toFile(outputPath);
-
-      // Public path
-      const publicPath = `/uploads/${fileName}`;
-
-      // Attach uploaded file info
       req.uploadedFile = {
         publicId,
-
         actualPath: outputPath,
-
-        publicPath,
-
+        publicPath: `/uploads/${fileName}`,
         fileName,
-
         mimeType: 'image/webp',
       };
-
       next();
     } catch (error) {
-      console.error(
-        'Image upload error:',
-        error
-      );
-
-      return res.status(500).json({
-        success: false,
-        message:
-          error.message ||
-          'Failed to process image',
-      });
+      console.error('Optional image upload error:', error);
+      return res.status(500).json({ success: false, message: error.message || 'Failed to process image' });
     }
   },
 ];
@@ -132,7 +162,7 @@ export const singleFileUpload = (fieldName = 'file') => [
   upload.single(fieldName),
 
   async (req, res, next) => {
-      console.log(req)
+
     try {
       if (!req.file) {
         return res.status(400).json({

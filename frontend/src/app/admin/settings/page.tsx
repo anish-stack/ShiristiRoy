@@ -6,6 +6,7 @@ import { toast } from '@/components/ui/Toaster';
 import {
   AdminPage, Card, CardHeader, Btn, Field, inputCls, Modal, ConfirmDelete,
 } from '@/components/admin/AdminUI';
+import LogoHeroSettings from '@/components/admin/LogoHeroSettings';
 
 type Setting = { _id: string; key: string; value: unknown; group: string };
 
@@ -39,7 +40,7 @@ export default function SettingsPage() {
   useEffect(() => { fetch(); }, [fetch]);
 
   const grouped = GROUPS.reduce<Record<string, Setting[]>>((acc, g) => {
-    acc[g] = settings.filter((s) => s.group === g);
+    acc[g] = settings.filter((s) => s.group === g && s.key !== 'brand.logo' && s.key !== 'brand.heroSlides');
     return acc;
   }, {});
 
@@ -95,6 +96,7 @@ export default function SettingsPage() {
       </div>
 
       {/* Settings for active group */}
+      {activeGroup === 'brand' && <div className="mb-6"><LogoHeroSettings /></div>}
       <Card>
         <CardHeader title={`${activeGroup} settings`} />
         <div className="divide-y divide-brand-lavender/5">
