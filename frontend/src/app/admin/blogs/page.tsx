@@ -41,15 +41,13 @@ export default function BlogPage() {
       // admin sees all statuses — query admin blogs endpoint
       const p = new URLSearchParams({ page: String(page), limit: '15' });
       if (search) p.set('q', search);
-      const data = await api.get<{ items: Blog[]; total: number }>(`/admin/blogs?${p}`);
-
+      const data = await api.get<Blog[]>(`/admin/blogs?${p}`);
       setList(data);
-      setTotal(data.length ?? 0);
+      setTotal(data.length);
     } catch {
       // fallback: hit public endpoint (only published)
       try {
         const data = await api.get<{ items: Blog[]; total: number }>(`/blogs?page=${page}`);
-        console.log('Public blog fetch fallback', data);
         setList(data.items); setTotal(data.total);
       } catch { toast('Failed to load', 'error'); }
     }

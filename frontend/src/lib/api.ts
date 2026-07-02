@@ -177,7 +177,7 @@ export const publicApi = {
 };
 
 // Types
-export type User = { _id: string; name: string; email: string; role: string; avatar?: { url: string }; isEmailVerified: boolean };
+export type User = { _id: string; name: string; email: string; phone: string; role: string; avatar?: { url: string }; isEmailVerified: boolean };
 export type Therapist = { _id: string; slug: string; title: string; bio: string; shortBio: string; specializations: string[]; languages: string[]; consultationFee: { amount: number; currency: string }; defaultSlotDurationMin: number; user: { name: string; avatar?: { url: string } }; rating: { avg: number; count: number } };
 export type Service = { _id: string; slug: string; name: string; shortDesc: string; description: string; durationMin: number; price: { amount: number; currency: string }; modes: string[]; category: string };
 export type Slot = { _id: string; startAt: string; endAt: string; durationMin: number; mode: string; status: string };

@@ -798,7 +798,7 @@ function BookingContent() {
               </div>
 
               <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
-                <Link href="/dashboard/appointments" style={{
+                <Link href="/dashboard" style={{
                   display: 'inline-flex', alignItems: 'center', gap: 6,
                   padding: '11px 22px', borderRadius: 12,
                   background: 'linear-gradient(135deg,#9b8ec4,#7b96b2)',

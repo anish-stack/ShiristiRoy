@@ -42,14 +42,13 @@ frontend/coverage/
 # BACKEND
 # =========================================================
 backend/logs/
-backend/uploads/
 backend/temp/
 backend/tmp/
 backend/coverage/
 
 # Ignore uploaded files but keep folder
-backend/public/uploads/*
-!backend/public/uploads/.gitkeep
+# backend/public/uploads/*
+# !backend/public/uploads/.gitkeep
 
 # =========================================================
 # CACHE
